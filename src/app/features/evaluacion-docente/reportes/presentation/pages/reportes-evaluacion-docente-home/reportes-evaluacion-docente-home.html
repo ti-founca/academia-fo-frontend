@@ -1,0 +1,45 @@
+<nz-table
+    #tablaEvaluaciones
+    [nzData]="facade.evaluacionGeneralDocenteList()"
+    [nzLoading]="facade.loading()"
+    nzSize="small">
+  <thead>
+    <tr>
+      <th nzWidth="60px"></th>
+      <th>Docente</th>
+      <th>Código</th>
+      <th>Materia</th>
+      <th>Tipo Docente</th>
+      <th>Puntaje</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (evaluacion of tablaEvaluaciones.data; track evaluacion.uuid) {
+      <tr>
+        <td [nzExpand]="isExpanded(evaluacion.uuid)()" (nzExpandChange)="onExpandChange(evaluacion.uuid, $event)"></td>
+        <td>{{ evaluacion.docente }}</td>
+        <td>{{ evaluacion.codigoMateria }}</td>
+        <td>{{ evaluacion.materia }}</td>
+        <td>{{ evaluacion.tipoDocente }}</td>
+        <td>{{ evaluacion.promedioGeneral }}</td>
+      </tr>
+      <tr [nzExpand]="isExpanded(evaluacion.uuid)()">
+        <nz-table
+          #tablaDetalles
+          nzSize="small"
+          [nzData]="findDetallesEvaluacion(evaluacion.uuid)()">
+          <tbody>
+            @for (detalle of tablaDetalles.data; track detalle.uuid){
+              <tr>
+                <td>{{ detalle.estamento }}</td>
+                <td>{{ detalle.peso }}</td>
+                <td>{{ detalle.promedioPonderado }}</td>
+              </tr>
+            }
+          </tbody>
+          </nz-table>
+      </tr>
+    }
+
+  </tbody>
+</nz-table>

@@ -1,25 +1,30 @@
-import { Component, computed, Signal, signal } from '@angular/core';
-import { EvaluacionGeneralDocenteRepository } from '../../../domain/repository/evaluacion-general-docente.repository';
-import { EvaluacionGeneralDocenteApiService } from '../../../data/evaluacion-general-docente-api.service';
-import { NzTableModule } from 'ng-zorro-antd/table';
+import { Component, computed, effect, Signal, signal } from '@angular/core';
 import { EvaluacionGeneralDocenteFacade } from '../../../application/evaluacion-general-docente.facade';
 import { DetalleEvaluacionGeneralDocente } from '../../../domain/model/detalle-evaluacion-general-docente.model';
+import { PeriodoLectivoFacade } from '../../../application/periodo-lectivo.facade';
+import componentConfig from './component.config';
+import { FormControl } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-reportes-evaluacion-docente-home',
-  imports: [NzTableModule],
-  templateUrl: './reportes-evaluacion-docente-home.html',
-  styleUrl: './reportes-evaluacion-docente-home.less',
-  providers: [
-    EvaluacionGeneralDocenteFacade,
-    { provide: EvaluacionGeneralDocenteRepository, useClass: EvaluacionGeneralDocenteApiService },
-  ],
+    templateUrl: './reportes-evaluacion-docente-home.html',
+    styleUrl: './reportes-evaluacion-docente-home.less',
+    imports: componentConfig.imports,
+    providers: componentConfig.providers
 })
 export class ReportesEvaluacionDocenteHome {
   expandSetSignal = signal(new Set<string>());
+  periodoLectivoCtrl = new FormControl<number | null>(null);
+  idPeriodoLectivoSel = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
 
-  constructor(public facade: EvaluacionGeneralDocenteFacade) {
-    facade.idPeriodo.set(20);
+  constructor(
+    public evaluacionGeneralFacade: EvaluacionGeneralDocenteFacade,
+    public periodoLectivoFacade: PeriodoLectivoFacade
+  ) {
+    effect(() => {
+      this.evaluacionGeneralFacade.idPeriodo.set(this.idPeriodoLectivoSel());
+    })
   }
 
   addExpand(id: string) {
@@ -48,6 +53,6 @@ export class ReportesEvaluacionDocenteHome {
   }
 
   findDetallesEvaluacion(id: string): Signal<DetalleEvaluacionGeneralDocente[]>{
-    return computed(() => this.facade.evaluacionGeneralDocenteList().find(ev => ev.uuid == id)?.detalle ?? []);
+    return computed(() => this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().find(ev => ev.uuid == id)?.detalle ?? []);
   }
 }

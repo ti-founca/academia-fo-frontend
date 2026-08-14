@@ -3,7 +3,11 @@
     <div nz-row [nzGutter]="[8,8]">
       <div nz-col nzFlex="auto">
         <div nz-flex nzGap="small">
-          <button nz-button>
+          <button
+            nz-button
+            [disabled]="exportarDisabled()"
+            [nzLoading]="evaluacionGeneralExporterFacade.loading()"
+            (click)="exportarEvaluacionGeneral()">
             <nz-icon nzType="file-excel" nzTheme="outline" />
             Exportar
           </button>

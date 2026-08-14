@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class EvaluacionGeneralDocenteApiService implements EvaluacionGeneralDocenteRepository{
+  
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:8080/api/evaluaciones/reportes/general';
 
@@ -23,5 +24,4 @@ export class EvaluacionGeneralDocenteApiService implements EvaluacionGeneralDoce
         )
       );
   }
-
 }

@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
-import { EvaluacionGeneralDocenteRepository } from '../domain/repository/evaluacion-general-docente.repository';
-import { EvaluacionGeneralDocente } from '../domain/model/evaluacion-general-docente.model';
+import { EvaluacionGeneralDocenteRepository } from '../../domain/repository/evaluacion-general-docente.repository';
+import { EvaluacionGeneralDocente } from '../../domain/model/evaluacion-general-docente.model';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, switchMap, tap } from 'rxjs';
 
@@ -33,6 +33,10 @@ export class EvaluacionGeneralDocenteFacade {
         this.evaluacionGeneralDocenteList.set(data);
       }
     });
+  }
+
+  downloadExcel(){
+    this.repository
   }
 
 }

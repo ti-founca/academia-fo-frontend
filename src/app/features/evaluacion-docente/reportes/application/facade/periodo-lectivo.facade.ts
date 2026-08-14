@@ -1,9 +1,9 @@
 import { computed, Injectable, Signal, signal } from '@angular/core';
-import { PeriodoLectivoRepository } from '../domain/repository/periodo-lectivo.repository';
+import { PeriodoLectivoRepository } from '../../domain/repository/periodo-lectivo.repository';
 import { PageRequest } from '@shared/pagination/page-request.model';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
-import { PeriodoLectivo } from '../domain/model/periodo-lectivo.model';
+import { PeriodoLectivo } from '../../domain/model/periodo-lectivo.model';
 import { Sort } from '@shared/pagination/sort.model';
 import { PaginatedResponse } from '@shared/pagination/paginated-response.model';
 

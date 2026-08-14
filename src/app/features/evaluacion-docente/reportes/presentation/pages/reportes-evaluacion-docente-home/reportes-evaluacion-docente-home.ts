@@ -1,10 +1,11 @@
 import { Component, computed, effect, Signal, signal } from '@angular/core';
-import { EvaluacionGeneralDocenteFacade } from '../../../application/evaluacion-general-docente.facade';
+import { EvaluacionGeneralDocenteFacade } from '../../../application/facade/evaluacion-general-docente.facade';
 import { DetalleEvaluacionGeneralDocente } from '../../../domain/model/detalle-evaluacion-general-docente.model';
-import { PeriodoLectivoFacade } from '../../../application/periodo-lectivo.facade';
+import { PeriodoLectivoFacade } from '../../../application/facade/periodo-lectivo.facade';
 import componentConfig from './component.config';
 import { FormControl } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { EvaluacionGeneralDocenteExporterFacade } from '@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente-exporter.facade';
 
 @Component({
   selector: 'app-reportes-evaluacion-docente-home',
@@ -17,10 +18,15 @@ export class ReportesEvaluacionDocenteHome {
   expandSetSignal = signal(new Set<string>());
   periodoLectivoCtrl = new FormControl<number | null>(null);
   idPeriodoLectivoSel = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
+  exportarDisabled: Signal<boolean> = computed(() => {
+    if(this.evaluacionGeneralFacade.evaluacionGeneralDocenteList == null) return true;
+    return this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().length == 0;
+  })
 
   constructor(
     public evaluacionGeneralFacade: EvaluacionGeneralDocenteFacade,
-    public periodoLectivoFacade: PeriodoLectivoFacade
+    public periodoLectivoFacade: PeriodoLectivoFacade,
+    public evaluacionGeneralExporterFacade: EvaluacionGeneralDocenteExporterFacade
   ) {
     effect(() => {
       this.evaluacionGeneralFacade.idPeriodo.set(this.idPeriodoLectivoSel());
@@ -54,5 +60,9 @@ export class ReportesEvaluacionDocenteHome {
 
   findDetallesEvaluacion(id: string): Signal<DetalleEvaluacionGeneralDocente[]>{
     return computed(() => this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().find(ev => ev.uuid == id)?.detalle ?? []);
+  }
+
+  exportarEvaluacionGeneral(){
+    this.evaluacionGeneralExporterFacade.exportar(this.idPeriodoLectivoSel() ?? -1);
   }
 }

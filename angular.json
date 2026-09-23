@@ -11,7 +11,11 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
+          "prefix": "acadfo",
           "style": "less"
+        },
+        "@schematics/angular:directive": {
+          "prefix": "acadfo"
         }
       },
       "root": "",

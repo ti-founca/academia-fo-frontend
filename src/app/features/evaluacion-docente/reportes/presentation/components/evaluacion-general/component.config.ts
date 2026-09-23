@@ -14,23 +14,31 @@ import { NzIconModule } from "ng-zorro-antd/icon"
 import { NzSelectModule } from "ng-zorro-antd/select"
 import { NzTableModule } from "ng-zorro-antd/table"
 import { EvaluacionGeneralDocenteExporterFacade } from "@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente-exporter.facade"
+import { NzSpaceModule } from "ng-zorro-antd/space"
+import { NzDrawerModule } from "ng-zorro-antd/drawer"
+import { NzBadgeModule } from "ng-zorro-antd/badge"
+import { RouterModule } from "@angular/router"
+import { NzSegmentedModule } from "ng-zorro-antd/segmented"
 
 export default {
     imports: [
+        ReactiveFormsModule,
         NzTableModule,
         NzFlexModule,
         NzButtonModule,
         NzIconModule,
         NzGridModule,
         NzSelectModule,
-        ReactiveFormsModule
+        NzSpaceModule,
+        NzDrawerModule,
+        NzBadgeModule,
+        RouterModule,
+        NzSegmentedModule
     ],
     providers: [
         EvaluacionGeneralDocenteFacade,
-        PeriodoLectivoFacade,
         EvaluacionGeneralDocenteExporterFacade,
         { provide: EvaluacionGeneralDocenteRepository, useClass: EvaluacionGeneralDocenteApiService },
-        { provide: PeriodoLectivoRepository, useClass: PeriodoLectivoApiService },
         { provide: EvaluacionGeneralDocenteExporter, useClass: EvaluacionGeneralDocenteExporterApiService }
     ]
 

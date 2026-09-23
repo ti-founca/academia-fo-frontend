@@ -1,0 +1,50 @@
+<div nz-row [nzGutter]="[8,8]">
+    <div nz-col nzSpan="24">
+        <div nz-row>
+        <div nz-col nzFlex="auto">
+            <button nz-button (click)="exportarReporte()">
+                <nz-icon nzType="file-excel" nzTheme="outline" />
+                Exportar
+            </button>
+        </div>
+        <did nz-col nz-flex [nzGap]="12">
+            <nz-badge [nzCount]="cantidadFiltros()">
+            <button nz-button nzType="default" (click)="abrirFiltros()">
+                <nz-icon nzType="filter" nzTheme="outline"></nz-icon>
+                Filtros
+            </button>
+            </nz-badge>
+            <nz-segmented
+                [nzOptions]="vistas"
+                [(ngModel)]="vistaActiva">
+            </nz-segmented>
+            </did>
+        </div>
+  </div>
+  <div nz-col nzSpan="24">
+    @if (vistaActiva() == 'General') {
+        <acadfo-evaluacion-general></acadfo-evaluacion-general>
+    }
+    @else if (vistaActiva() == 'Por Indicador') {
+        <acadfo-evaluacion-por-indicador></acadfo-evaluacion-por-indicador>
+    }
+  </div>
+</div>
+<nz-drawer
+  [nzClosable]="true"
+  [nzVisible]="panelFiltrosVisible()"
+  nzPlacement="right"
+  nzTitle="Filtros"
+  (nzOnClose)="cerrarFiltros()">
+  <ng-container *nzDrawerContent>
+    @if (vistaActiva() == 'General') {
+        <acadfo-evdoc-form-filtro-general
+            (idPeriodoLectivo)="setIdPeriodoLectivoGral($event)"
+            (cantidadFiltros)="setCantidadFiltros($event)">
+        </acadfo-evdoc-form-filtro-general>
+    }
+    @if (vistaActiva() == 'Por Indicador') {
+        <acadfo-evdoc-form-filtro-indicador></acadfo-evdoc-form-filtro-indicador>
+    }
+  </ng-container>
+</nz-drawer>

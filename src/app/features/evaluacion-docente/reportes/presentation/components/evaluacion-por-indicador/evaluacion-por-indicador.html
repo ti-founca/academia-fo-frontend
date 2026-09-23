@@ -1,0 +1,18 @@
+<nz-tabs nzTabPosition="left">
+        @for (anho of anhos; track $index) {
+            <nz-tab [nzTitle]="anho.nombre">
+                <nz-table nzSize="small" nzTemplateMode>
+                    <tbody>
+                        @for (estamento of estamentoFacade.estamentoList(); track estamento.id) {
+                        <tr>
+                            <td>{{ estamento.descripcion }}</td>
+                            <td nzAlign="right">
+                                <nz-segmented [nzOptions]="['Encargado', 'Miembro']"></nz-segmented>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </nz-table>
+            </nz-tab>
+        }
+    </nz-tabs>

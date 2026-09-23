@@ -2,7 +2,7 @@ import { Injectable, signal } from '@angular/core';
 import { EvaluacionGeneralDocenteRepository } from '../../domain/repository/evaluacion-general-docente.repository';
 import { EvaluacionGeneralDocente } from '../../domain/model/evaluacion-general-docente.model';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { catchError, EMPTY, finalize, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, of, switchMap } from 'rxjs';
 
 @Injectable()
 export class EvaluacionGeneralDocenteFacade {
@@ -16,7 +16,7 @@ export class EvaluacionGeneralDocenteFacade {
     toObservable(this.idPeriodo)
       .pipe(
         switchMap(id => {
-          if(id == null) return EMPTY;
+          if(id == null) return of([]);
           this.loading.set(true);
           return this.repository.getByIdPeriodo(id).pipe(
             catchError(err => {

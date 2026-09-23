@@ -1,4 +1,4 @@
-import { Component, computed, effect, Signal, signal } from '@angular/core';
+import { Component, computed, effect, ElementRef, Signal, signal, viewChild } from '@angular/core';
 import { EvaluacionGeneralDocenteFacade } from '../../../application/facade/evaluacion-general-docente.facade';
 import { DetalleEvaluacionGeneralDocente } from '../../../domain/model/detalle-evaluacion-general-docente.model';
 import { PeriodoLectivoFacade } from '../../../application/facade/periodo-lectivo.facade';
@@ -8,29 +8,32 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { EvaluacionGeneralDocenteExporterFacade } from '@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente-exporter.facade';
 
 @Component({
-  selector: 'app-reportes-evaluacion-docente-home',
-    templateUrl: './reportes-evaluacion-docente-home.html',
-    styleUrl: './reportes-evaluacion-docente-home.less',
+  selector: 'acadfo-evaluacion-general',
+    templateUrl: './evaluacion-general.html',
+    styleUrl: './evaluacion-general.less',
     imports: componentConfig.imports,
     providers: componentConfig.providers
 })
-export class ReportesEvaluacionDocenteHome {
-  expandSetSignal = signal(new Set<string>());
-  periodoLectivoCtrl = new FormControl<number | null>(null);
-  idPeriodoLectivoSel = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
-  exportarDisabled: Signal<boolean> = computed(() => {
+export class EvaluacionGeneral {
+  public readonly filtrosGeneralVw = viewChild<ElementRef>('filtrosGeneral');
+  readonly expandSetSignal = signal(new Set<string>());
+  public readonly exportarDisabled: Signal<boolean> = computed(() => {
     if(this.evaluacionGeneralFacade.evaluacionGeneralDocenteList == null) return true;
     return this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().length == 0;
   })
 
+  readonly visible = signal(false);
+
   constructor(
     public evaluacionGeneralFacade: EvaluacionGeneralDocenteFacade,
-    public periodoLectivoFacade: PeriodoLectivoFacade,
     public evaluacionGeneralExporterFacade: EvaluacionGeneralDocenteExporterFacade
   ) {
-    effect(() => {
+    /*effect(() => {
       this.evaluacionGeneralFacade.idPeriodo.set(this.idPeriodoLectivoSel());
     })
+    effect(() => {
+      this.filtrosGeneralVw.
+    })*/
   }
 
   addExpand(id: string) {
@@ -62,7 +65,20 @@ export class ReportesEvaluacionDocenteHome {
     return computed(() => this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().find(ev => ev.uuid == id)?.detalle ?? []);
   }
 
-  exportarEvaluacionGeneral(){
-    this.evaluacionGeneralExporterFacade.exportar(this.idPeriodoLectivoSel() ?? -1);
+  public exportarEvaluacionGeneral(){
+    this.evaluacionGeneralExporterFacade.exportar(this.evaluacionGeneralFacade.idPeriodo() ?? -1);
+  }
+
+  abrirFiltros(){
+    this.visible.set(true);
+  }
+
+  cerrarFiltros(){
+    this.visible.set(false);
+  }
+
+  setIdPeriodoLectivo(id: number | null){
+    console.log("Set id periodo lectivo seleccionado evaluacion general :" + id)
+    this.evaluacionGeneralFacade.idPeriodo.set(id);
   }
 }

@@ -1,3 +1,5 @@
+@header-height: 48px;
+
 :host {
   display: flex;
   text-rendering: optimizeLegibility;
@@ -17,8 +19,11 @@
 }
 
 .header-trigger {
-  height: 64px;
-  padding: 20px 24px;
+  //height: 100%;
+  //width: @header-height;
+  //padding: 20px 24px;
+  padding-left: 16px;
+  padding-right: 16px;
   font-size: 20px;
   cursor: pointer;
   transition:
@@ -32,10 +37,10 @@
 
 .sidebar-logo {
   position: relative;
-  height: 64px;
+  height: @header-height;
   padding-left: 24px;
   overflow: hidden;
-  line-height: 64px;
+  line-height: @header-height;
   background: #001529;
   transition: all 0.3s;
 }
@@ -66,18 +71,22 @@ nz-header {
   padding: 0;
   width: 100%;
   z-index: 2;
+  height: min-content;
 }
 
 .app-header {
+  display: flex;
+  align-items: center;
+  justify-content: left;
   position: relative;
-  height: 64px;
+  height: @header-height;
   padding: 0;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 }
 
 nz-content {
-  margin: 24px;
+  margin: 16px;
 }
 
 .inner-content {

@@ -1,7 +1,9 @@
+import { Materia } from "./materia.model";
+import { TipoDocente } from "./tipo-docente.model";
+
 export interface DetalleEvaluacionGeneralDocente {
   uuid: string;
-  estamento: string;
-  peso: string;
-  promedio: number;
-  promedioPonderado: number;
+  materia: Materia;
+  tipoDocente: TipoDocente;
+  promedioGeneral: number;
 }

@@ -1,6 +1,6 @@
 <div nz-row [nzGutter]="[8,8]">
     <div nz-col nzSpan="24">
-      <!-- <nz-select
+      <nz-select
           [formControl]="periodoLectivoCtrl"
           [nzLoading]="periodoLectivoFacade.loading()"
           (nzScrollToBottom)="periodoLectivoFacade.loadNextPage()"
@@ -10,6 +10,6 @@
           @for (pl of periodoLectivoFacade.periodoLectivoList(); track pl.id) {
             <nz-option [nzValue]="pl.id" [nzLabel]="pl.descripcion"></nz-option>
           }
-        </nz-select> -->
+        </nz-select>
       </div>
   </div>

@@ -1,8 +1,11 @@
-import { Component, computed, ElementRef, Signal, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, Signal, signal, viewChild } from '@angular/core';
 import { EvaluacionGeneralDocenteFacade } from '../../../application/facade/evaluacion-general-docente.facade';
+import { DetalleEvaluacionGeneralDocente } from '../../../domain/model/detalle-evaluacion-general-docente.model';
+import { PeriodoLectivoFacade } from '../../../application/facade/periodo-lectivo.facade';
 import componentConfig from './component.config';
+import { FormControl } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { EvaluacionGeneralDocenteExporterFacade } from '@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente-exporter.facade';
-import { EvaluacionGeneralDocente } from '@features/evaluacion-docente/reportes/domain/model/evaluacion-general-docente.model';
 
 @Component({
   selector: 'acadfo-evaluacion-general',
@@ -13,7 +16,7 @@ import { EvaluacionGeneralDocente } from '@features/evaluacion-docente/reportes/
 })
 export class EvaluacionGeneral {
   public readonly filtrosGeneralVw = viewChild<ElementRef>('filtrosGeneral');
-  readonly expandSetSignal = signal(new Set<number>());
+  readonly expandSetSignal = signal(new Set<string>());
   public readonly exportarDisabled: Signal<boolean> = computed(() => {
     if(this.evaluacionGeneralFacade.evaluacionGeneralDocenteList == null) return true;
     return this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().length == 0;
@@ -33,7 +36,7 @@ export class EvaluacionGeneral {
     })*/
   }
 
-  addExpand(id: number) {
+  addExpand(id: string) {
     this.expandSetSignal.update((set) => {
       const nuevoSet = new Set(set);
       nuevoSet.add(id);
@@ -41,7 +44,7 @@ export class EvaluacionGeneral {
     });
   }
 
-  removeExpand(id: number) {
+  removeExpand(id: string) {
     this.expandSetSignal.update((set) => {
       const nuevoSet = new Set(set);
       nuevoSet.delete(id);
@@ -49,18 +52,18 @@ export class EvaluacionGeneral {
     });
   }
 
-  onExpandChange(id: number, checked: boolean): void {
+  onExpandChange(id: string, checked: boolean): void {
     if (checked) this.addExpand(id);
     else this.removeExpand(id);
   }
 
-  isExpanded(id: number) {
+  isExpanded(id: string) {
     return computed(() => this.expandSetSignal().has(id));
   }
 
-  /*findDetallesEvaluacion(id: string): Signal<DetalleEvaluacionGeneralDocente[]>{
+  findDetallesEvaluacion(id: string): Signal<DetalleEvaluacionGeneralDocente[]>{
     return computed(() => this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().find(ev => ev.uuid == id)?.detalle ?? []);
-  }*/
+  }
 
   public exportarEvaluacionGeneral(){
     this.evaluacionGeneralExporterFacade.exportar(this.evaluacionGeneralFacade.idPeriodo() ?? -1);
@@ -75,10 +78,7 @@ export class EvaluacionGeneral {
   }
 
   setIdPeriodoLectivo(id: number | null){
+    console.log("Set id periodo lectivo seleccionado evaluacion general :" + id)
     this.evaluacionGeneralFacade.idPeriodo.set(id);
   }
-
-  sortCodigoDocenteFn = (a: EvaluacionGeneralDocente, b: EvaluacionGeneralDocente): number => a.idDocente - b.idDocente;
-  sortNombresFn = (a: EvaluacionGeneralDocente, b: EvaluacionGeneralDocente): number => a.nombres.localeCompare(b.nombres);
-  sortApellidosFn = (a: EvaluacionGeneralDocente, b: EvaluacionGeneralDocente): number => a.apellidos.localeCompare(b.apellidos);
 }

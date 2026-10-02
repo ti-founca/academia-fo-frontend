@@ -1,0 +1,47 @@
+<div nz-row [nzGutter]="[8,8]">
+    <div nz-col nzSpan="24">
+        <div nz-row>
+        <div nz-col nzFlex="auto">
+            <button nz-button>
+                <nz-icon nzType="file-excel" nzTheme="outline" />
+                Exportar
+            </button>
+        </div>
+        <did nz-col nz-flex [nzGap]="12">
+            <nz-badge [nzCount]="cantidadFiltros()">
+            <button nz-button nzType="default">
+                <nz-icon nzType="filter" nzTheme="outline"></nz-icon>
+                Filtros
+            </button>
+            </nz-badge>
+            <nz-segmented
+                [nzOptions]="vistas"
+                [(ngModel)]="vistaActiva">
+            </nz-segmented>
+            </did>
+        </div>
+  </div>
+  <div nz-col nzSpan="24">
+    <div nz-row [nzGutter]="[8,8]">
+        <div nz-col nzSpan="8">
+            <nz-descriptions [nzColumn]="1" nzBordered nzSize="small" style="background-color: white;">
+                <nz-descriptions-item nzTitle="Código">
+                    {{ docente() == null ? '-' : docente()?.id }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Nombres">
+                    {{ docente() == null ? '-' : docente()?.nombres }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Apellidos">
+                    {{ docente() == null ? '-' : docente()?.apellidos }}
+                </nz-descriptions-item>
+                <nz-descriptions-item nzTitle="Nro. Documento">
+                    {{ docente() == null || !isCINumeric() ? '-' : (docente()?.id ?? 0 ) | number}}
+                </nz-descriptions-item>
+            </nz-descriptions>
+        </div>
+        <div nz-col nzSpan="18">
+            
+        </div>
+    </div>
+  </div>
+</div>

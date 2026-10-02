@@ -8,22 +8,11 @@
             </button>
         </div>
         <did nz-col nz-flex [nzGap]="12">
-            <nz-select
-                [formControl]="periodoLectivoCtrl"
-                [nzLoading]="periodoLectivoFacade.loading()"
-                (nzScrollToBottom)="periodoLectivoFacade.loadNextPage()"
-                style="width: 300px"
-                nzPlaceHolder="Periodo Lectivo..."
-                nzAllowClear>
-                @for (pl of periodoLectivoFacade.periodoLectivoList(); track pl.id) {
-                    <nz-option [nzValue]="pl.id" [nzLabel]="pl.descripcion"></nz-option>
-                }
-            </nz-select>
             <nz-badge [nzCount]="cantidadFiltros()">
-                <button nz-button nzType="default" (click)="abrirFiltros()">
-                    <nz-icon nzType="filter" nzTheme="outline"></nz-icon>
-                    Filtros
-                </button>
+            <button nz-button nzType="default" (click)="abrirFiltros()">
+                <nz-icon nzType="filter" nzTheme="outline"></nz-icon>
+                Filtros
+            </button>
             </nz-badge>
             <nz-segmented
                 [nzOptions]="vistas"
@@ -50,6 +39,7 @@
   <ng-container *nzDrawerContent>
     @if (vistaActiva() == 'General') {
         <acadfo-evdoc-form-filtro-general
+            (idPeriodoLectivo)="setIdPeriodoLectivoGral($event)"
             (cantidadFiltros)="setCantidadFiltros($event)">
         </acadfo-evdoc-form-filtro-general>
     }

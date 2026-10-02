@@ -1,13 +1,8 @@
-import { Component, computed, effect, ElementRef, inject, model, Signal, signal, viewChild, ViewChild } from '@angular/core';
+import { Component, computed, ElementRef, model, Signal, signal, viewChild, ViewChild } from '@angular/core';
 import componentConfig from './component.config';
 import { EvaluacionGeneral } from '../../components/evaluacion-general/evaluacion-general';
 import { EvaluacionPorIndicador } from '../../components/evaluacion-por-indicador/evaluacion-por-indicador';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Router } from '@angular/router';
-import { outputFromObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { PeriodoLectivoFacade } from '@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade';
-import id from '@angular/common/locales/id';
 
 const VISTAS = ["General", "Por Indicador"] as const;
 type VistaType = typeof VISTAS[number];
@@ -20,9 +15,6 @@ type VistaType = typeof VISTAS[number];
   providers: componentConfig.providers
 })
 export class ReporteEvdocHome {
-  public readonly periodoLectivoFacade: PeriodoLectivoFacade = inject(PeriodoLectivoFacade);
-  private readonly notif: NzNotificationService = inject(NzNotificationService);
-
   readonly evGeneralView = viewChild(EvaluacionGeneral);
   readonly evPorIndicadorView = viewChild(EvaluacionPorIndicador);
   readonly emptyFilterFormVw = viewChild('emptyFilterForm');
@@ -31,15 +23,9 @@ export class ReporteEvdocHome {
   readonly cantidadFiltros = signal<number>(0);
   readonly panelFiltrosVisible = signal(false);
 
-  readonly periodoLectivoCtrl = new FormControl<number | null>(null);
-  readonly idPeriodoLectivoSig = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
-
-  constructor(){
-    effect(() => {
-      const idPeriodoLectivo = this.idPeriodoLectivoSig();
-      this.evGeneralView()?.setIdPeriodoLectivo(idPeriodoLectivo);
-    });
-  }
+  constructor(
+    private notif: NzNotificationService
+  ){}
 
   exportarReporte(){
     if(this.vistaActiva() == 'General'){

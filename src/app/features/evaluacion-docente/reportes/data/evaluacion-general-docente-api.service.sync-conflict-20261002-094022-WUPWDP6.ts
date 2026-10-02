@@ -8,16 +8,17 @@ import { HttpClient } from '@angular/common/http';
 export class EvaluacionGeneralDocenteApiService implements EvaluacionGeneralDocenteRepository{
   
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/periodos-lectivos';
+  private baseUrl = 'http://localhost:8080/api/evaluaciones/reportes/general';
 
   getByIdPeriodo(idPeriodo: number): Observable<EvaluacionGeneralDocente[]> {
-    return this.http.get<EvaluacionGeneralDocente[]>(`${this.baseUrl}/${idPeriodo}/reportes/docentes`)
+    return this.http.get<EvaluacionGeneralDocente[]>(`${this.baseUrl}?idPeriodo=${idPeriodo}`)
       .pipe(
         map((evaluaciones) =>
           evaluaciones.map(e => {
             return {
               ...e,
-              detalle: e.puntajes.map(d => ({...d, uuid: crypto.randomUUID()}))
+              uuid: crypto.randomUUID(),
+              detalle: e.detalle.map(d => ({...d, uuid: crypto.randomUUID()}))
             }
           })
         )

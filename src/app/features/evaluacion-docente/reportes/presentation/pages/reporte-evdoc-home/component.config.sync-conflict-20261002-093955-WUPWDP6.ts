@@ -1,4 +1,4 @@
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { NzBadgeModule } from "ng-zorro-antd/badge";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzGridModule } from "ng-zorro-antd/grid";
@@ -11,14 +11,9 @@ import { NzNotificationService } from "ng-zorro-antd/notification";
 import { NzDrawerModule } from "ng-zorro-antd/drawer";
 import { FormFiltroGeneral } from "../../components/form-filtro-general/form-filtro-general";
 import { FormFiltroIndicador } from "../../components/form-filtro-indicador/form-filtro-indicador";
-import { NzSelectModule } from "ng-zorro-antd/select";
-import { PeriodoLectivoFacade } from "@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade";
-import { PeriodoLectivoApiService } from "@features/evaluacion-docente/reportes/data/periodo-lectivo-api.service";
-import { PeriodoLectivoRepository } from "@features/evaluacion-docente/reportes/domain/repository/periodo-lectivo.repository";
 
 export default {
     imports: [
-        ReactiveFormsModule,
         FormsModule,
         NzGridModule,
         NzBadgeModule,
@@ -30,12 +25,9 @@ export default {
         EvaluacionPorIndicador,
         NzDrawerModule,
         FormFiltroGeneral,
-        FormFiltroIndicador,
-        NzSelectModule
+        FormFiltroIndicador
     ],
     providers: [
-        NzNotificationService,
-        PeriodoLectivoFacade,
-        { provide: PeriodoLectivoRepository, useClass: PeriodoLectivoApiService },
+        NzNotificationService
     ]
 }

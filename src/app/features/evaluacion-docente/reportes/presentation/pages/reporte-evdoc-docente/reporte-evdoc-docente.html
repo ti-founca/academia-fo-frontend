@@ -1,46 +1,112 @@
 <div nz-row [nzGutter]="[8,8]">
+    
     <div nz-col nzSpan="24">
         <div nz-row>
-        <div nz-col nzFlex="auto">
-            <button nz-button>
-                <nz-icon nzType="file-excel" nzTheme="outline" />
-                Exportar
-            </button>
-        </div>
-        <did nz-col nz-flex [nzGap]="12">
-            <nz-badge [nzCount]="cantidadFiltros()">
-            <button nz-button nzType="default">
-                <nz-icon nzType="filter" nzTheme="outline"></nz-icon>
-                Filtros
-            </button>
-            </nz-badge>
-            <nz-segmented
-                [nzOptions]="vistas"
-                [(ngModel)]="vistaActiva">
-            </nz-segmented>
+            <div nz-col nzFlex="auto">
+                <button nz-button (click)="exportar()" [nzLoading]="exportando()" [disabled]="exportarDisabled()">
+                    <nz-icon nzType="file-pdf" nzTheme="outline" />
+                    Exportar PDF
+                </button>
+            </div>
+            <did nz-col nz-flex [nzGap]="12">
+                <span><i><strong>{{ periodoLectivoResource.value()?.descripcion }}</strong></i></span>
             </did>
         </div>
   </div>
-  <div nz-col nzSpan="24">
-    <div nz-row [nzGutter]="[8,8]">
-        <div nz-col nzSpan="8">
-            <nz-descriptions [nzColumn]="1" nzBordered nzSize="small" style="background-color: white;">
-                <nz-descriptions-item nzTitle="Código">
-                    {{ docente() == null ? '-' : docente()?.id }}
-                </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Nombres">
-                    {{ docente() == null ? '-' : docente()?.nombres }}
-                </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Apellidos">
-                    {{ docente() == null ? '-' : docente()?.apellidos }}
-                </nz-descriptions-item>
-                <nz-descriptions-item nzTitle="Nro. Documento">
-                    {{ docente() == null || !isCINumeric() ? '-' : (docente()?.id ?? 0 ) | number}}
-                </nz-descriptions-item>
-            </nz-descriptions>
+    @if (!docenteResource.isLoading() && !docente()) {
+        <div nz-col nzSpan="24">
+            <nz-alert nzType="warning" nzMessage="No se encontraron datos para mostrar" nzShowIcon></nz-alert>
         </div>
-        <div nz-col nzSpan="18">
-            
+    }
+    
+  <div nz-col nzSpan="24">
+    <div nz-row [nzGutter]="[16,16]">
+        <div nz-col nzSpan="8">
+            <nz-spin [nzSpinning]="!docenteResource.error() && docenteResource.isLoading()">
+                <nz-descriptions [nzColumn]="1" nzBordered nzSize="small" style="background-color: white;">
+                    <nz-descriptions-item nzTitle="Código">
+                        {{ docente() == null ? '-' : docente()?.id }}
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Nombres">
+                        {{ docente() == null ? '-' : docente()?.nombres }}
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Apellidos">
+                        {{ docente() == null ? '-' : docente()?.apellidos }}
+                    </nz-descriptions-item>
+                    <nz-descriptions-item nzTitle="Nro. Documento">
+                        {{ docente() == null || !isCINumeric() ? '-' : (docente()?.ci ) | number}}
+                    </nz-descriptions-item>
+                </nz-descriptions>
+            </nz-spin>
+        </div>
+        <div nz-col nzSpan="16">
+            <nz-spin [nzSpinning]="evaluacionDocenteResource.isLoading()">
+                <nz-collapse nzBordered="false">
+                    @if (evaluacionDocenteResource.isLoading()) {
+                    <nz-collapse-panel [nzHeader]="'Cargando...'"></nz-collapse-panel>
+                    }
+                    @for (detalleEvaluacion of detalleEvaluacionDocente(); track $index) {
+                        <nz-collapse-panel [nzHeader]="headerCollapseTpl" [nzExtra]="extraTpl">
+                            <nz-table #tablaPuntajeEstamento
+                                    [nzData]="detalleEvaluacion.puntajePorEstamento"
+                                    nzShowPagination="false"
+                                    nzSize="small">
+                                    <thead>
+                                        <tr>
+                                            <th nzWidth="60px"></th>
+                                            <th nzWidth="80px">Peso</th>
+                                            <th>Estamento</th>
+                                            <th>Puntaje</th>
+                                            <th>Puntaje Ponderado</th>
+                                        </tr>
+                                    </thead>
+                                        <tbody>
+                                            @for (puntajeEstamento of tablaPuntajeEstamento.data; track $index) {
+                                            <tr>
+                                                <td [nzExpand]="isExpanded(`${detalleEvaluacion.materia.id}-${puntajeEstamento.estamento.id}`)()"
+                                                    (nzExpandChange)="onExpandChange(`${detalleEvaluacion.materia.id}-${puntajeEstamento.estamento.id}`, $event)">
+                                                </td>
+                                                <td>{{ puntajeEstamento.estamento.porcentajePeso| number:'1.0-0'}}%</td>
+                                                <td>{{ puntajeEstamento.estamento.descripcion }}</td>
+                                                <td>{{ puntajeEstamento.puntaje | number:'1.2-2' }}</td>
+                                                <td>{{ puntajeEstamento.puntajePonderado | number:'1.2-2' }}</td>
+                                            </tr>
+                                            <tr [nzExpand]="isExpanded(`${detalleEvaluacion.materia.id}-${puntajeEstamento.estamento.id}`)()">
+                                                <nz-table #tablaPuntajeIndicador
+                                                    [nzData]="puntajeEstamento.puntajePorIndicador"
+                                                    nzSize="small"
+                                                    style="width: 100%;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Nro. Orden</th>
+                                                                <th>Indicador</th>
+                                                                <th>Puntaje</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @for (puntajeIndicador of tablaPuntajeIndicador.data; track $index) {
+                                                            <tr>
+                                                                <td>{{ puntajeIndicador.indicador.nroOrden }}</td>
+                                                                <td>{{ puntajeIndicador.indicador.descripcion }}</td>
+                                                                <td>{{ puntajeIndicador.puntaje | number:'1.2-2' }}</td>
+                                                            </tr>
+                                                            }
+                                                        </tbody>
+                                                </nz-table> 
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </nz-table>
+                        </nz-collapse-panel>
+                        <ng-template #headerCollapseTpl>
+                            <span>{{ detalleEvaluacion.materia.descripcion }} - <i>{{ detalleEvaluacion.tipoDocente.descripcion}}</i></span>
+                        </ng-template>
+                        <ng-template #extraTpl>                    
+                            <nz-tag>{{ detalleEvaluacion.puntajeGeneral| number:'1.2-2' }}</nz-tag>
+                        </ng-template>
+                    }
+                </nz-collapse>
+            </nz-spin>
         </div>
     </div>
   </div>

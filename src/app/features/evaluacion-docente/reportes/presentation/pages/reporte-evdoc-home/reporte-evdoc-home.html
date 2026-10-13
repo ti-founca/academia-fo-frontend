@@ -34,20 +34,25 @@
   </div>
   <div nz-col nzSpan="24">
     @if (vistaActiva() == 'General') {
-        <acadfo-evaluacion-general></acadfo-evaluacion-general>
+        <acadfo-evaluacion-general [idPeriodoLectivo]="idPeriodoLectivo()"></acadfo-evaluacion-general>
     }
     @else if (vistaActiva() == 'Por Indicador') {
         <acadfo-evaluacion-por-indicador></acadfo-evaluacion-por-indicador>
     }
   </div>
 </div>
+@if (panelFiltrosVisible()) {
 <nz-drawer
   [nzClosable]="true"
   [nzVisible]="panelFiltrosVisible()"
   nzPlacement="right"
   nzTitle="Filtros"
+  [nzContent]="filtrosTpl"
   (nzOnClose)="cerrarFiltros()">
-  <ng-container *nzDrawerContent>
+</nz-drawer>
+}
+
+<ng-template #filtrosTpl>
     @if (vistaActiva() == 'General') {
         <acadfo-evdoc-form-filtro-general
             (cantidadFiltros)="setCantidadFiltros($event)">
@@ -56,5 +61,4 @@
     @if (vistaActiva() == 'Por Indicador') {
         <acadfo-evdoc-form-filtro-indicador></acadfo-evdoc-form-filtro-indicador>
     }
-  </ng-container>
-</nz-drawer>
+</ng-template>

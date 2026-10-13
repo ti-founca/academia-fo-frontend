@@ -1,13 +1,12 @@
-import { Component, computed, effect, ElementRef, inject, model, Signal, signal, viewChild, ViewChild } from '@angular/core';
+import { Component, effect, inject, input, model, signal, untracked, viewChild } from '@angular/core';
 import componentConfig from './component.config';
 import { EvaluacionGeneral } from '../../components/evaluacion-general/evaluacion-general';
 import { EvaluacionPorIndicador } from '../../components/evaluacion-por-indicador/evaluacion-por-indicador';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { Router } from '@angular/router';
-import { outputFromObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 import { PeriodoLectivoFacade } from '@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade';
-import id from '@angular/common/locales/id';
+import { ActivatedRoute, Router } from '@angular/router';
 
 const VISTAS = ["General", "Por Indicador"] as const;
 type VistaType = typeof VISTAS[number];
@@ -22,6 +21,8 @@ type VistaType = typeof VISTAS[number];
 export class ReporteEvdocHome {
   public readonly periodoLectivoFacade: PeriodoLectivoFacade = inject(PeriodoLectivoFacade);
   private readonly notif: NzNotificationService = inject(NzNotificationService);
+  private readonly router = inject(Router);
+  private readonly aroute = inject(ActivatedRoute);
 
   readonly evGeneralView = viewChild(EvaluacionGeneral);
   readonly evPorIndicadorView = viewChild(EvaluacionPorIndicador);
@@ -32,13 +33,26 @@ export class ReporteEvdocHome {
   readonly panelFiltrosVisible = signal(false);
 
   readonly periodoLectivoCtrl = new FormControl<number | null>(null);
-  readonly idPeriodoLectivoSig = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
+  readonly idPeriodoLectivo = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
 
   constructor(){
+    const idPeriodoParam = this.aroute.snapshot.paramMap.get('idPeriodo');
+    if(idPeriodoParam != null && !isNaN(Number(idPeriodoParam))){
+      this.periodoLectivoCtrl.setValue(Number(idPeriodoParam));
+    }else{
+      this.periodoLectivoCtrl.setValue(null);
+    }
     effect(() => {
-      const idPeriodoLectivo = this.idPeriodoLectivoSig();
-      this.evGeneralView()?.setIdPeriodoLectivo(idPeriodoLectivo);
-    });
+      const idPeriodoSeleccionado = this.idPeriodoLectivo();
+      if(idPeriodoSeleccionado != null){
+        this.router.navigate([idPeriodoSeleccionado], { relativeTo: this.aroute.parent });
+      }else{
+        this.router.navigate(['.'], { relativeTo: this.aroute.parent });
+      }
+    })
+    /*effect(() => {
+      console.log('ID Periodo Param: ' + this.idPeriodoParam());
+    })*/
   }
 
   exportarReporte(){
@@ -62,9 +76,9 @@ export class ReporteEvdocHome {
     this.panelFiltrosVisible.set(false);
   }
 
-  setIdPeriodoLectivoGral(id: number | null){
+  /*setIdPeriodoLectivoGral(id: number | null){
     this.evGeneralView()?.setIdPeriodoLectivo(id);
-  }
+  }*/
 
   setCantidadFiltros(cantidad: number){
     this.cantidadFiltros.set(cantidad);

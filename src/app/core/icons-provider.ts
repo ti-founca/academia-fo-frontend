@@ -3,7 +3,8 @@ import {
   MenuUnfoldOutline,
   FormOutline,
   DashboardOutline,
-  FileExcelOutline
+  FileExcelOutline,
+  FilePdfOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -12,4 +13,5 @@ export const icons = [
   DashboardOutline,
   FormOutline,
   FileExcelOutline,
+  FilePdfOutline,
 ];

@@ -5,6 +5,11 @@ import { ReporteEvdocDocente } from './presentation/pages/reporte-evdoc-docente/
 export const REPORTES_EVALUACION_DOCENTE_ROUTES: Routes = [
      {
           path: '',
+          redirectTo: 'ninguno',
+          pathMatch: 'full'
+     },
+     {
+          path: ':idPeriodo',
           component: ReporteEvdocHome
      },
      {

@@ -3,8 +3,8 @@
   <div nz-col nzSpan="24">
     <nz-table
       #tablaEvaluaciones
-      [nzData]="evaluacionGeneralFacade.evaluacionGeneralDocenteList()"
-      [nzLoading]="evaluacionGeneralFacade.loading()"
+      [nzData]="evaluacionGeneralList()"
+      [nzLoading]="evaluacionGeneralResource.isLoading()"
       nzSize="small">
       <thead>
       <tr>
@@ -25,7 +25,7 @@
             <td>{{ docente.apellidos }}</td>
             <td nzAlign="right">{{ docente.ci | number }}</td>
             <td nzAlign="center">
-              <button nz-button [routerLink]="[evaluacionGeneralFacade.idPeriodo(), 'docentes', docente.idDocente]">
+              <button nz-button [routerLink]="['docentes', docente.idDocente]">
                 <nz-icon nzType="eye" nzTheme="outline"></nz-icon>
               </button>
             </td>
@@ -50,7 +50,7 @@
                     <td>{{ detalle.materia.codigo }}</td>
                     <td>{{ detalle.materia.descripcion }}</td>
                     <td>{{ detalle.tipoDocente.descripcion }}</td>
-                    <td>{{ detalle.promedioGeneral }}</td>
+                    <td>{{ detalle.puntajeGeneral | number:'1.2-2' }}</td>
                   </tr>
                 }
               </tbody>

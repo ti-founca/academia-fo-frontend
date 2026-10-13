@@ -57,4 +57,8 @@ export class PeriodoLectivoFacade {
     this.loadMore = true
     this.page.set(this.page() + 1);
   }
+
+  public findByIdResource(id: Signal<number | undefined>) {
+    return this.repository.findById(id);
+  }
 }

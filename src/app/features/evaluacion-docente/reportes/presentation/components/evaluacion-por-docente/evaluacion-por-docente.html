@@ -13,6 +13,7 @@
         <th [nzSortFn]="sortNombresFn">Nombres</th>
         <th [nzSortFn]="sortApellidosFn">Apellidos</th>
         <th>CI</th>
+        <th>Materias</th>
         <th></th>
       </tr>
       </thead>
@@ -24,6 +25,7 @@
             <td>{{ docente.nombres }}</td>
             <td>{{ docente.apellidos }}</td>
             <td nzAlign="right">{{ docente.ci | number }}</td>
+            <td nzAlign="center">{{ docente.puntajes.length }}</td>
             <td nzAlign="center">
               <button nz-button [routerLink]="['docentes', docente.idDocente]">
                 <nz-icon nzType="eye" nzTheme="outline"></nz-icon>

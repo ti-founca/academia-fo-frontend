@@ -25,7 +25,7 @@
             <td>{{ docente.nombres }}</td>
             <td>{{ docente.apellidos }}</td>
             <td nzAlign="right">{{ docente.ci | number }}</td>
-            <td nzAlign="center">{{ docente.puntajes.length }}</td>
+            <td nzAlign="right">{{ docente.puntajes.length }}</td>
             <td nzAlign="center">
               <button nz-button [routerLink]="['docentes', docente.idDocente]">
                 <nz-icon nzType="eye" nzTheme="outline"></nz-icon>

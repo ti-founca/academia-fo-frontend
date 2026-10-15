@@ -9,9 +9,9 @@
             <nz-empty nzNotFoundContent="Sin evaluaciones para este estamento"></nz-empty>
         }
         @else {
-            <nz-collapse>
+            <nz-tabs nzType="card">
             @for (grupo of grupos; track grupo.tipoDocente.id) {
-                <nz-collapse-panel [nzHeader]="grupo.tipoDocente.descripcion" [nzActive]="true">
+                <nz-tab [nzTitle]="grupo.tipoDocente.descripcion">
                     <nz-table #tablaIndicadores
                         [nzData]="grupo.indicadores"
                         [nzShowPagination]="false"
@@ -39,9 +39,9 @@
                             </tr>
                         </tbody>
                     </nz-table>
-                </nz-collapse-panel>
+                </nz-tab>
             }
-            </nz-collapse>
+            </nz-tabs>
         }
     </nz-tab>
 }

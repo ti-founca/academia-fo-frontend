@@ -1,14 +1,14 @@
-import { Component, effect, inject, input, model, signal, untracked, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, input, model, signal, untracked, viewChild } from '@angular/core';
 import componentConfig from './component.config';
-import { EvaluacionGeneral } from '../../components/evaluacion-general/evaluacion-general';
-import { EvaluacionPorIndicador } from '../../components/evaluacion-por-indicador/evaluacion-por-indicador';
+import { EvaluacionPorDocente } from '../../components/evaluacion-por-docente/evaluacion-por-docente';
+import { EvaluacionPorCurso } from '../../components/evaluacion-por-curso/evaluacion-por-curso';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { PeriodoLectivoFacade } from '@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade';
 import { ActivatedRoute, Router } from '@angular/router';
 
-const VISTAS = ["General", "Por Indicador"] as const;
+const VISTAS = ["Por Docente", "Por Curso"] as const;
 type VistaType = typeof VISTAS[number];
 
 @Component({
@@ -24,16 +24,22 @@ export class ReporteEvdocHome {
   private readonly router = inject(Router);
   private readonly aroute = inject(ActivatedRoute);
 
-  readonly evGeneralView = viewChild(EvaluacionGeneral);
-  readonly evPorIndicadorView = viewChild(EvaluacionPorIndicador);
+  readonly evPorDocenteView = viewChild(EvaluacionPorDocente);
+  readonly evPorCursoView = viewChild(EvaluacionPorCurso);
   readonly emptyFilterFormVw = viewChild('emptyFilterForm');
   readonly vistas = [...VISTAS]; 
-  readonly vistaActiva = model<VistaType>("General");
-  readonly cantidadFiltros = signal<number>(0);
+  readonly vistaActiva = model<VistaType>("Por Docente");
   readonly panelFiltrosVisible = signal(false);
 
   readonly periodoLectivoCtrl = new FormControl<number | null>(null);
   readonly idPeriodoLectivo = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
+  readonly idTipoDocenteFiltro = signal<number | undefined>(undefined);
+  readonly cantidadFiltros = computed(() => {
+    switch (this.vistaActiva()) {
+      case 'Por Curso': return this.idTipoDocenteFiltro() != null ? 1 : 0;
+      default: return 0;
+    }
+  });
 
   constructor(){
     const idPeriodoParam = this.aroute.snapshot.paramMap.get('idPeriodo');
@@ -56,15 +62,15 @@ export class ReporteEvdocHome {
   }
 
   exportarReporte(){
-    if(this.vistaActiva() == 'General'){
-      if(this.evGeneralView()?.exportarDisabled() ?? true)
+    if(this.vistaActiva() == 'Por Docente'){
+      if(this.evPorDocenteView()?.exportarDisabled() ?? true)
         this.notif.warning('Reporte sin datos','');
       else
-        this.evGeneralView()?.exportarEvaluacionGeneral();
-    }else if(this.vistaActiva() == 'Por Indicador'){
-      this.notif.info('Exportar', 'Por Indicador');
+        this.evPorDocenteView()?.exportarEvaluacionPorDocente();
+    }else if(this.vistaActiva() == 'Por Curso'){
+      this.notif.info('Exportar', 'Por Curso');
     }else {
-      this.notif.error('Error al exportar', 'El modo debe ser «General» o «Por Indicador»');
+      this.notif.error('Error al exportar', 'El modo debe ser «Por Docente» o «Por Curso»');
     }
   }
 
@@ -76,11 +82,7 @@ export class ReporteEvdocHome {
     this.panelFiltrosVisible.set(false);
   }
 
-  /*setIdPeriodoLectivoGral(id: number | null){
-    this.evGeneralView()?.setIdPeriodoLectivo(id);
+  /*setIdPeriodoLectivoPorDocente(id: number | null){
+    this.evPorDocenteView()?.setIdPeriodoLectivo(id);
   }*/
-
-  setCantidadFiltros(cantidad: number){
-    this.cantidadFiltros.set(cantidad);
-  }
 }

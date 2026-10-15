@@ -1,0 +1,31 @@
+<nz-tabs nzTabPosition="left">
+@for (anho of anhos; track $index) {
+    <nz-tab [nzTitle]="anho.nombre">
+        <nz-table #tablaDocenteMateria
+            [nzData]="getEvauacionPorCurso(anho.anho)()"
+            [nzLoading]="isEvaluacionesLoading()"            
+            nzSize="small">
+            <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Docente</th>
+                    <th>Materia</th>
+                    <th>Puntaje</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (evaluacion of tablaDocenteMateria.data; track $index) {
+                <tr>
+                    <td>{{ evaluacion.tipoDocente.descripcion }}</td>
+                    <td>{{ evaluacion.docente.nombres }} {{ evaluacion.docente.apellidos }}</td>
+                    <td>{{ evaluacion.materia.descripcion }}</td>
+                    <td>{{ evaluacion.puntajeGeneral }}</td>
+                </tr>
+                }
+            </tbody>
+        </nz-table>
+    </nz-tab>   
+}
+</nz-tabs>
+
+

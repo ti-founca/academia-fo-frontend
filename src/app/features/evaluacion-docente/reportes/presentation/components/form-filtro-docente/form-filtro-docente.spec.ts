@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import {  EvaluacionGeneral } from './evaluacion-general';
+import { FormFiltroDocente } from './form-filtro-docente';
 
-describe('ReportesEvaluacionDocenteHome', () => {
-  let component: EvaluacionGeneral;
-  let fixture: ComponentFixture<EvaluacionGeneral>;
+describe('FormFiltroDocente', () => {
+  let component: FormFiltroDocente;
+  let fixture: ComponentFixture<FormFiltroDocente>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EvaluacionGeneral],
+      imports: [FormFiltroDocente],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(EvaluacionGeneral);
+    fixture = TestBed.createComponent(FormFiltroDocente);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

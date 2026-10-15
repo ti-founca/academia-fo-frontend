@@ -1,16 +1,16 @@
 import { Component, computed, ElementRef, inject, input, Signal, signal, viewChild } from '@angular/core';
 import { EvaluacionGeneralDocenteFacade } from '../../../application/facade/evaluacion-general-docente.facade';
 import componentConfig from './component.config';
-import { EvaluacionGeneralDocente } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-general-docente.model';
+import { EvaluacionDocente } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-docente.model';
 
 @Component({
-  selector: 'acadfo-evaluacion-general',
-    templateUrl: './evaluacion-general.html',
-    styleUrl: './evaluacion-general.less',
+  selector: 'acadfo-evaluacion-por-docente',
+    templateUrl: './evaluacion-por-docente.html',
+    styleUrl: './evaluacion-por-docente.less',
     imports: componentConfig.imports,
     providers: componentConfig.providers
 })
-export class EvaluacionGeneral {
+export class EvaluacionPorDocente {
   public readonly filtrosGeneralVw = viewChild<ElementRef>('filtrosGeneral');
   private readonly evaluacionGeneralDocenteFacade = inject(EvaluacionGeneralDocenteFacade);
   
@@ -51,7 +51,7 @@ export class EvaluacionGeneral {
     return computed(() => this.evaluacionGeneralFacade.evaluacionGeneralDocenteList().find(ev => ev.uuid == id)?.detalle ?? []);
   }*/
 
-  public exportarEvaluacionGeneral(){
+  public exportarEvaluacionPorDocente(){
     this.evaluacionGeneralDocenteFacade.exportar(this.idPeriodoLectivo() ?? -1);
   }
 
@@ -67,7 +67,7 @@ export class EvaluacionGeneral {
     this.idPeriodo.set(id);
   }*/
 
-  sortCodigoDocenteFn = (a: EvaluacionGeneralDocente, b: EvaluacionGeneralDocente): number => a.idDocente - b.idDocente;
-  sortNombresFn = (a: EvaluacionGeneralDocente, b: EvaluacionGeneralDocente): number => a.nombres.localeCompare(b.nombres);
-  sortApellidosFn = (a: EvaluacionGeneralDocente, b: EvaluacionGeneralDocente): number => a.apellidos.localeCompare(b.apellidos);
+  sortCodigoDocenteFn = (a: EvaluacionDocente, b: EvaluacionDocente): number => a.idDocente - b.idDocente;
+  sortNombresFn = (a: EvaluacionDocente, b: EvaluacionDocente): number => a.nombres.localeCompare(b.nombres);
+  sortApellidosFn = (a: EvaluacionDocente, b: EvaluacionDocente): number => a.apellidos.localeCompare(b.apellidos);
 }

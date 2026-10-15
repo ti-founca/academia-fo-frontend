@@ -33,15 +33,17 @@
         </div>
   </div>
   <div nz-col nzSpan="24">
-    @if (vistaActiva() == 'General') {
-        <acadfo-evaluacion-general [idPeriodoLectivo]="idPeriodoLectivo()"></acadfo-evaluacion-general>
+    @if (vistaActiva() == 'Por Docente') {
+        <acadfo-evaluacion-por-docente [idPeriodoLectivo]="idPeriodoLectivo()"></acadfo-evaluacion-por-docente>
     }
-    @else if (vistaActiva() == 'Por Indicador') {
-        <acadfo-evaluacion-por-indicador></acadfo-evaluacion-por-indicador>
+    @else if (vistaActiva() == 'Por Curso') {
+        <acadfo-evaluacion-por-curso
+            [idPeriodo]="idPeriodoLectivo() ?? undefined"
+            [idTipoDocente]="idTipoDocenteFiltro()">
+        </acadfo-evaluacion-por-curso>
     }
   </div>
 </div>
-@if (panelFiltrosVisible()) {
 <nz-drawer
   [nzClosable]="true"
   [nzVisible]="panelFiltrosVisible()"
@@ -50,15 +52,16 @@
   [nzContent]="filtrosTpl"
   (nzOnClose)="cerrarFiltros()">
 </nz-drawer>
-}
+
 
 <ng-template #filtrosTpl>
-    @if (vistaActiva() == 'General') {
-        <acadfo-evdoc-form-filtro-general
-            (cantidadFiltros)="setCantidadFiltros($event)">
-        </acadfo-evdoc-form-filtro-general>
+    @if (vistaActiva() == 'Por Docente') {
+        <acadfo-evdoc-form-filtro-docente></acadfo-evdoc-form-filtro-docente>
     }
-    @if (vistaActiva() == 'Por Indicador') {
-        <acadfo-evdoc-form-filtro-indicador></acadfo-evdoc-form-filtro-indicador>
+    @if (vistaActiva() == 'Por Curso') {
+        <acadfo-evdoc-form-filtro-curso
+            [idTipoDocente]="idTipoDocenteFiltro()"
+            (tipoDocenteChange)="idTipoDocenteFiltro.set($event ?? undefined)">
+        </acadfo-evdoc-form-filtro-curso>
     }
 </ng-template>

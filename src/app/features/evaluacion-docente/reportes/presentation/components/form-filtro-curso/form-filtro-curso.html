@@ -1,0 +1,15 @@
+<div nz-row [nzGutter]="[8,8]">
+    <div nz-col nzSpan="24">
+        Tipo de docente
+    </div>
+    <div nz-col nzSpan="24">
+        <nz-select
+            nzPlaceHolder="Seleccionar..."
+            style="width: 100%;"
+            [formControl]="tipoDocenteCtrl"
+            nzAllowClear>
+            <nz-option nzLabel="ENCARGADO" [nzValue]="1"></nz-option>
+            <nz-option nzLabel="MIEMBRO" [nzValue]="2"></nz-option>
+        </nz-select>
+    </div>
+</div>

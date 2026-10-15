@@ -3,15 +3,15 @@ import { Materia } from '../../domain/model/materia.model';
 import { TipoDocente } from '../../domain/model/tipo-docente.model';
 import { Estamento } from './estamento.model';
 
-export interface EvaluacionGeneralDocente{
+export interface EvaluacionDocente{
   idDocente: number
   nombres: string;
   apellidos: string;
   ci: string;
-  puntajes: PuntajeMateriaDocente[];
+  puntajes: PuntajeMateria[];
 }
 
-export interface PuntajeMateriaDocente {
+export interface PuntajeMateria {
   uuid: string;
   materia: Materia;
   tipoDocente: TipoDocente;

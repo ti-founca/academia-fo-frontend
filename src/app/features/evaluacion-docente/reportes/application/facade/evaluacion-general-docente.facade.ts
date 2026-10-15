@@ -1,12 +1,14 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
-import { EvaluacionGeneralDocente } from '../read-model/evaluacion-general-docente.model';
+import { EvaluacionDocente } from '../read-model/evaluacion-docente.model';
 import { ReporteEvaluacionGeneralQuery } from '../port/reporte-evaluacion-general.port';
 import { finalize } from 'rxjs';
+import { RepoResource } from '@shared/type/repo-resource';
+import { EvaluacionDocenteMateria } from '../read-model/evaluacion-docente-materia.model';
 
 @Injectable()
 export class EvaluacionGeneralDocenteFacade {
   private readonly reporteEvaluacionGeneralQuery = inject(ReporteEvaluacionGeneralQuery);
-  readonly evaluacionGeneralDocenteList = signal<EvaluacionGeneralDocente[]>([]);
+  readonly evaluacionGeneralDocenteList = signal<EvaluacionDocente[]>([]);
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
   readonly idPeriodo = signal<number | null>(null);
@@ -64,6 +66,10 @@ export class EvaluacionGeneralDocenteFacade {
       link.download = nombreArchivo;
       link.click();
       window.URL.revokeObjectURL(link.href);
+  }
+
+  public getReporteDocenteMateriaByIdPeriodo(idPeriodo: Signal<number | undefined>): RepoResource<EvaluacionDocenteMateria[]>{
+    return this.reporteEvaluacionGeneralQuery.getReporteDocenteMateriaByIdPeriodo(idPeriodo);
   }
 
 }

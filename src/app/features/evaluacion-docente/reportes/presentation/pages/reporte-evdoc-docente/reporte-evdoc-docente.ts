@@ -6,7 +6,7 @@ import { NominaDocenteFacade } from '@features/evaluacion-docente/reportes/appli
 import { ActivatedRoute } from '@angular/router';
 import { DocenteFacade } from '@features/evaluacion-docente/reportes/application/facade/docente.facade';
 import { EvaluacionGeneralDocenteFacade } from '@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente.facade';
-import { EvaluacionGeneralDocente, PuntajeMateriaDocente } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-general-docente.model';
+import { EvaluacionDocente, PuntajeMateria } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-docente.model';
 import { PeriodoLectivoFacade } from '@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade';
 
 const VISTAS = ["General", "Por Indicador"] as const;
@@ -39,9 +39,9 @@ export class ReporteEvdocDocente {
   readonly evaluacionDocenteResource = this.evaluacionGeneralDocenteFacade.getByIdPeriodoIdDocente(this.idPeriodo, this.idDocente);
   readonly periodoLectivoResource = this.periodoLectivoFacade.findByIdResource(this.idPeriodo);
 
-  readonly evaluacionDocente = computed<EvaluacionGeneralDocente | undefined>(() => this.evaluacionDocenteResource.value());
+  readonly evaluacionDocente = computed<EvaluacionDocente | undefined>(() => this.evaluacionDocenteResource.value());
   readonly docente: Signal<Docente | undefined> = computed(() => this.docenteResource.value());
-  readonly detalleEvaluacionDocente = computed<PuntajeMateriaDocente[]>(() => {
+  readonly detalleEvaluacionDocente = computed<PuntajeMateria[]>(() => {
     const evaluacion = this.evaluacionDocente();
     if(evaluacion == null) return [];
     return evaluacion.puntajes;

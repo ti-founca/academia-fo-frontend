@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ReporteEvdocHome } from './reporte-evdoc-home';
 
-describe('EvaluacionPorIndicador', () => {
+describe('ReporteEvdocHome', () => {
   let component: ReporteEvdocHome;
   let fixture: ComponentFixture<ReporteEvdocHome>;
 

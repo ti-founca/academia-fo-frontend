@@ -36,6 +36,21 @@ export class EvaluacionGeneralDocenteFacade {
       })   
   }
 
+  exportarPorCurso(idPeriodo: number, idTipoDocente?: number) {
+      this.loading.set(true);
+      this.reporteEvaluacionGeneralQuery.exportarExcelPorCurso(idPeriodo, idTipoDocente)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+          next: blob => {
+              this.error.set(null);
+              this.descargar(blob, 'ReportePorCurso.xlsx');
+          },
+          error: e => {
+              this.error.set(e.message);
+          }
+      })
+  }
+
   exportarPdfDocente(idPeriodo: number, idDocente: number, nombreArchivo: string) {
       // La pestaña se abre antes de la petición para que el navegador no la bloquee como popup
       const ventana = window.open('', '_blank');

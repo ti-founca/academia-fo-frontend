@@ -9,5 +9,6 @@ export abstract class ReporteEvaluacionGeneralQuery {
     abstract getByIdPeriodoIdDocente(idPeriodo: Signal<number | undefined>, idDocente: Signal<number | undefined>): RepoResource<EvaluacionDocente | undefined>;
     abstract getReporteDocenteMateriaByIdPeriodo(idPeriodo: Signal<number | undefined>): RepoResource<EvaluacionDocenteMateria[]>;
     abstract exportarExcel(idPeriodo: number): Observable<Blob>;
+    abstract exportarExcelPorCurso(idPeriodo: number, idTipoDocente?: number): Observable<Blob>;
     abstract exportarPdfDocente(idPeriodo: number, idDocente: number): Observable<Blob>;
 }

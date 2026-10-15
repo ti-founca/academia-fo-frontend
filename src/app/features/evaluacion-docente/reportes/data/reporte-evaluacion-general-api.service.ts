@@ -34,6 +34,14 @@ export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGene
         );
     }
 
+    exportarExcelPorCurso(idPeriodo: number, idTipoDocente?: number): Observable<Blob> {
+        const params: Record<string, number> = {};
+        if(idTipoDocente != null) params['idTipoDocente'] = idTipoDocente;
+        return this.http.get(`${this.periodosApiUrl}/${idPeriodo}/reportes/docentes-materias/exportar`,
+            { responseType: 'blob', params }
+        );
+    }
+
     exportarPdfDocente(idPeriodo: number, idDocente: number): Observable<Blob> {
         return this.http.get(`${this.periodosApiUrl}/${idPeriodo}/reportes/docentes/${idDocente}/pdf`,
             { responseType: 'blob' }

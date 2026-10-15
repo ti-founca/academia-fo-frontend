@@ -71,7 +71,10 @@ export class ReporteEvdocHome {
       else
         this.evPorDocenteView()?.exportarEvaluacionPorDocente();
     }else if(this.vistaActiva() == 'Por Curso'){
-      this.notif.info('Exportar', 'Por Curso');
+      if(this.evPorCursoView()?.exportarDisabled() ?? true)
+        this.notif.warning('Reporte sin datos','');
+      else
+        this.evPorCursoView()?.exportarEvaluacionPorCurso();
     }else if(this.vistaActiva() == 'Por Estamento'){
       if(this.evPorEstamentoView()?.exportarDisabled() ?? true)
         this.notif.warning('Reporte sin datos','');

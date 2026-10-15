@@ -28,6 +28,7 @@ export class EvaluacionPorCurso {
     return evaluaciones.filter(ed => idTipoDoc != null ? ed.tipoDocente.id == idTipoDoc : true)
   });
   readonly isEvaluacionesLoading = computed(() => this.evaluacionDocenteMateriaResource.isLoading());
+  readonly exportarDisabled = computed(() => this.evaluacionesDocentesMaterias().length === 0);
 
   readonly anhos: Anho[] = [
     { anho: 1, nombre: "1er año" },
@@ -36,6 +37,12 @@ export class EvaluacionPorCurso {
     { anho: 4, nombre: "4to año" },
     { anho: 5, nombre: "5to año" }
   ]
+
+  exportarEvaluacionPorCurso(){
+    const idPeriodo = this.idPeriodo();
+    if(idPeriodo == null) return;
+    this.evaluacionGeneralDocenteFacade.exportarPorCurso(idPeriodo, this.idTipoDocente());
+  }
 
   getEvauacionPorCurso(anho: number): Signal<EvaluacionDocenteMateria[]>{
     return computed(() => {

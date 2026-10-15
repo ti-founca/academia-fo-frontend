@@ -53,7 +53,7 @@ export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGene
     getReporteDocenteMateriaByIdPeriodo(idPeriodo: Signal<number | undefined>): RepoResource<EvaluacionDocenteMateria[]> {
         const httpRes = httpResource<EvaluacionDocenteMateria[]>(() => {
             const idPer = idPeriodo();
-            if(!idPer == null) return undefined;
+            if(idPer == null) return undefined;
             return `${this.periodosApiUrl}/${idPer}/reportes/docentes-materias`;
         }, {
             defaultValue: [],

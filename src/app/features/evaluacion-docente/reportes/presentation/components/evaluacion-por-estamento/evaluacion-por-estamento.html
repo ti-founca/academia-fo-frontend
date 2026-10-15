@@ -1,0 +1,48 @@
+<nz-tabs nzTabPosition="left">
+@for (estamento of estamentoFacade.estamentoList(); track estamento.id) {
+    <nz-tab [nzTitle]="estamento.descripcion">
+        @let grupos = reportePorEstamento().get(estamento.id) ?? [];
+        @if (isLoading()) {
+            <nz-skeleton [nzActive]="true"></nz-skeleton>
+        }
+        @else if (grupos.length == 0) {
+            <nz-empty nzNotFoundContent="Sin evaluaciones para este estamento"></nz-empty>
+        }
+        @else {
+            <nz-collapse>
+            @for (grupo of grupos; track grupo.tipoDocente.id) {
+                <nz-collapse-panel [nzHeader]="grupo.tipoDocente.descripcion" [nzActive]="true">
+                    <nz-table #tablaIndicadores
+                        [nzData]="grupo.indicadores"
+                        [nzShowPagination]="false"
+                        [nzFrontPagination]="false"
+                        nzSize="small">
+                        <thead>
+                            <tr>
+                                <th nzWidth="60px">Nº</th>
+                                <th>Indicador</th>
+                                <th nzWidth="120px" nzAlign="right">Promedio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (fila of tablaIndicadores.data; track fila.indicador.id) {
+                            <tr>
+                                <td>{{ fila.indicador.nroOrden }}</td>
+                                <td>{{ fila.indicador.descripcion }}</td>
+                                <td nzAlign="right">{{ fila.promedio | number:'1.2-2' }}</td>
+                            </tr>
+                            }
+                            <tr class="fila-promedio">
+                                <td></td>
+                                <td>Promedio</td>
+                                <td nzAlign="right">{{ grupo.promedio | number:'1.2-2' }}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-collapse-panel>
+            }
+            </nz-collapse>
+        }
+    </nz-tab>
+}
+</nz-tabs>

@@ -7,7 +7,7 @@
                 Exportar
             </button>
         </div>
-        <did nz-col nz-flex [nzGap]="12">
+        <div nz-col nz-flex [nzGap]="12">
             <nz-select
                 [formControl]="periodoLectivoCtrl"
                 [nzLoading]="periodoLectivoFacade.loading()"
@@ -29,7 +29,7 @@
                 [nzOptions]="vistas"
                 [(ngModel)]="vistaActiva">
             </nz-segmented>
-            </did>
+            </div>
         </div>
   </div>
   <div nz-col nzSpan="24">
@@ -41,6 +41,12 @@
             [idPeriodo]="idPeriodoLectivo() ?? undefined"
             [idTipoDocente]="idTipoDocenteFiltro()">
         </acadfo-evaluacion-por-curso>
+    }
+    @else if (vistaActiva() == 'Por Estamento') {
+        <acadfo-evaluacion-por-estamento
+            [idPeriodo]="idPeriodoLectivo() ?? undefined"
+            [idTipoDocente]="idTipoDocenteFiltro()">
+        </acadfo-evaluacion-por-estamento>
     }
   </div>
 </div>
@@ -58,7 +64,7 @@
     @if (vistaActiva() == 'Por Docente') {
         <acadfo-evdoc-form-filtro-docente></acadfo-evdoc-form-filtro-docente>
     }
-    @if (vistaActiva() == 'Por Curso') {
+    @if (vistaActiva() == 'Por Curso' || vistaActiva() == 'Por Estamento') {
         <acadfo-evdoc-form-filtro-curso
             [idTipoDocente]="idTipoDocenteFiltro()"
             (tipoDocenteChange)="idTipoDocenteFiltro.set($event ?? undefined)">

@@ -2,13 +2,14 @@ import { Component, computed, effect, inject, input, model, signal, untracked, v
 import componentConfig from './component.config';
 import { EvaluacionPorDocente } from '../../components/evaluacion-por-docente/evaluacion-por-docente';
 import { EvaluacionPorCurso } from '../../components/evaluacion-por-curso/evaluacion-por-curso';
+import { EvaluacionPorEstamento } from '../../components/evaluacion-por-estamento/evaluacion-por-estamento';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { PeriodoLectivoFacade } from '@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade';
 import { ActivatedRoute, Router } from '@angular/router';
 
-const VISTAS = ["Por Docente", "Por Curso"] as const;
+const VISTAS = ["Por Docente", "Por Curso", "Por Estamento"] as const;
 type VistaType = typeof VISTAS[number];
 
 @Component({
@@ -26,6 +27,7 @@ export class ReporteEvdocHome {
 
   readonly evPorDocenteView = viewChild(EvaluacionPorDocente);
   readonly evPorCursoView = viewChild(EvaluacionPorCurso);
+  readonly evPorEstamentoView = viewChild(EvaluacionPorEstamento);
   readonly emptyFilterFormVw = viewChild('emptyFilterForm');
   readonly vistas = [...VISTAS]; 
   readonly vistaActiva = model<VistaType>("Por Docente");
@@ -36,7 +38,8 @@ export class ReporteEvdocHome {
   readonly idTipoDocenteFiltro = signal<number | undefined>(undefined);
   readonly cantidadFiltros = computed(() => {
     switch (this.vistaActiva()) {
-      case 'Por Curso': return this.idTipoDocenteFiltro() != null ? 1 : 0;
+      case 'Por Curso':
+      case 'Por Estamento': return this.idTipoDocenteFiltro() != null ? 1 : 0;
       default: return 0;
     }
   });
@@ -69,8 +72,13 @@ export class ReporteEvdocHome {
         this.evPorDocenteView()?.exportarEvaluacionPorDocente();
     }else if(this.vistaActiva() == 'Por Curso'){
       this.notif.info('Exportar', 'Por Curso');
+    }else if(this.vistaActiva() == 'Por Estamento'){
+      if(this.evPorEstamentoView()?.exportarDisabled() ?? true)
+        this.notif.warning('Reporte sin datos','');
+      else
+        this.evPorEstamentoView()?.exportarEvaluacionPorEstamento();
     }else {
-      this.notif.error('Error al exportar', 'El modo debe ser «Por Docente» o «Por Curso»');
+      this.notif.error('Error al exportar', 'El modo debe ser «Por Docente», «Por Curso» o «Por Estamento»');
     }
   }
 

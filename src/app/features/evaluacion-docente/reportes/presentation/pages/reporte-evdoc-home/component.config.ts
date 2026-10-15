@@ -6,6 +6,7 @@ import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzSegmentedModule } from "ng-zorro-antd/segmented";
 import { EvaluacionPorDocente } from "../../components/evaluacion-por-docente/evaluacion-por-docente";
 import { EvaluacionPorCurso } from "../../components/evaluacion-por-curso/evaluacion-por-curso";
+import { EvaluacionPorEstamento } from "../../components/evaluacion-por-estamento/evaluacion-por-estamento";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzNotificationService } from "ng-zorro-antd/notification";
 import { NzDrawerModule } from "ng-zorro-antd/drawer";
@@ -28,6 +29,7 @@ export default {
         NzButtonModule,
         EvaluacionPorDocente,
         EvaluacionPorCurso,
+        EvaluacionPorEstamento,
         NzDrawerModule,
         FormFiltroDocente,
         FormFiltroCurso,

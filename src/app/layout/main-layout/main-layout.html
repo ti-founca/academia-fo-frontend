@@ -36,6 +36,21 @@
         <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
           <nz-icon class="trigger" [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" />
         </span>
+        <div class="user-menu" nz-dropdown nzTrigger="click" nzPlacement="bottomRight" [nzDropdownMenu]="userMenu">
+          <nz-avatar nzIcon="user" nzSize="small" />
+          <span class="user-name">{{ sesion.nombreCompleto() }}</span>
+          <nz-icon nzType="down" />
+        </div>
+        <nz-dropdown-menu #userMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item nzDisabled>{{ sesion.usuario()?.correo }}</li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item (click)="cerrarSesion()">
+              <nz-icon nzType="logout" />
+              Cerrar sesión
+            </li>
+          </ul>
+        </nz-dropdown-menu>
       </div>
     </nz-header>
     <nz-content>

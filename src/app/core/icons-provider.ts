@@ -4,7 +4,14 @@ import {
   FormOutline,
   DashboardOutline,
   FileExcelOutline,
-  FilePdfOutline
+  FilePdfOutline,
+  MailOutline,
+  LockOutline,
+  EyeOutline,
+  EyeInvisibleOutline,
+  UserOutline,
+  DownOutline,
+  LogoutOutline
 } from '@ant-design/icons-angular/icons';
 
 export const icons = [
@@ -14,4 +21,11 @@ export const icons = [
   FormOutline,
   FileExcelOutline,
   FilePdfOutline,
+  MailOutline,
+  LockOutline,
+  EyeOutline,
+  EyeInvisibleOutline,
+  UserOutline,
+  DownOutline,
+  LogoutOutline,
 ];

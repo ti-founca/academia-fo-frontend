@@ -1,0 +1,61 @@
+<div class="login-container">
+  <nz-card class="login-card">
+    <h1 class="login-title">Academia FO</h1>
+    <p class="login-subtitle">Ingrese sus credenciales para continuar</p>
+
+    @if (error(); as mensaje) {
+      <nz-alert class="login-alert" nzType="error" [nzMessage]="mensaje" nzShowIcon />
+    }
+
+    <form nz-form nzLayout="vertical" [formGroup]="form" (ngSubmit)="ingresar()">
+      <nz-form-item>
+        <nz-form-label nzFor="correo">Correo</nz-form-label>
+        <nz-form-control [nzErrorTip]="correoError">
+          <nz-input-group nzPrefixIcon="mail">
+            <input
+              nz-input
+              id="correo"
+              type="email"
+              formControlName="correo"
+              placeholder="usuario@ejemplo.com"
+              autocomplete="username"
+            />
+          </nz-input-group>
+          <ng-template #correoError let-control>
+            @if (control.errors?.['required']) {
+              Ingrese su correo.
+            } @else if (control.errors?.['email']) {
+              Ingrese un correo válido.
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="clave">Clave</nz-form-label>
+        <nz-form-control nzErrorTip="Ingrese su clave.">
+          <nz-input-group nzPrefixIcon="lock" [nzSuffix]="toggleClave">
+            <input
+              nz-input
+              id="clave"
+              [type]="claveVisible() ? 'text' : 'password'"
+              formControlName="clave"
+              autocomplete="current-password"
+            />
+          </nz-input-group>
+          <ng-template #toggleClave>
+            <nz-icon
+              class="toggle-clave"
+              [nzType]="claveVisible() ? 'eye-invisible' : 'eye'"
+              (click)="claveVisible.set(!claveVisible())"
+            />
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+
+      <button nz-button nzType="primary" nzBlock type="submit" [nzLoading]="enviando()">
+        Ingresar
+      </button>
+    </form>
+  </nz-card>
+</div>

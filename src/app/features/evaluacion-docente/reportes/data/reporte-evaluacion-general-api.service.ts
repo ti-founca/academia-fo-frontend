@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@core/config/api.config";
 import { Observable } from "rxjs";
 import { ReporteEvaluacionGeneralQuery } from "../application/port/reporte-evaluacion-general.port";
 import { inject, Injectable, Injector, Signal } from "@angular/core";
@@ -12,9 +13,9 @@ export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGene
     private readonly http = inject(HttpClient);
     private readonly injector = inject(Injector);
     
-    private readonly apiUrl = 'http://localhost:8080/api/evaluaciones/reportes/general';
-    private readonly baseUrl = 'http://localhost:8080/api/evaluaciones/reportes/general/exportar';
-    private readonly periodosApiUrl = 'http://localhost:8080/api/periodos-lectivos';
+    private readonly apiUrl = `${API_BASE_URL}/evaluaciones/reportes/general`;
+    private readonly baseUrl = `${API_BASE_URL}/evaluaciones/reportes/general/exportar`;
+    private readonly periodosApiUrl = `${API_BASE_URL}/periodos-lectivos`;
     
     getByIdPeriodo(idPeriodo: Signal<number | undefined>): RepoResource<EvaluacionDocente[]> {
         const resource = httpResource<EvaluacionDocente[]>(()=>{

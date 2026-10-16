@@ -99,6 +99,29 @@ describe('authInterceptor', () => {
     expect(TestBed.inject(SesionStore).estaAutenticado()).toBe(true);
   });
 
+  it('agrega el token a peticiones del backend con query string', () => {
+    configurar(sesion(10 * 60_000));
+    http.get(API, { params: { page: 0 } }).subscribe();
+    const req = ctrl.expectOne((r) => r.url === API);
+    expect(req.request.headers.get('Authorization')).toBe('Bearer access-1');
+    req.flush([]);
+  });
+
+  it('no envía el token a URLs fuera del backend', () => {
+    configurar(sesion(10 * 60_000));
+    const externas = [
+      'https://terceros.example.com/api/datos',
+      'http://localhost:8080/api-otro/recurso',
+      'http://localhost:8080/otra',
+    ];
+    externas.forEach((url) => http.get(url).subscribe());
+    externas.forEach((url) => {
+      const req = ctrl.expectOne(url);
+      expect(req.request.headers.has('Authorization')).toBe(false);
+      req.flush(null);
+    });
+  });
+
   it('no intercepta las rutas de autenticación', () => {
     configurar(sesion(5_000));
     http.post(REFRESH, {}).subscribe();

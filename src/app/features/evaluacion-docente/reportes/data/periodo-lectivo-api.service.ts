@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@core/config/api.config';
 import { HttpClient, HttpParams, httpResource, HttpResourceRef } from '@angular/common/http';
 import { inject, Injectable, Injector, Signal } from '@angular/core';
 import { PeriodoLectivoRepository } from '../domain/repository/periodo-lectivo.repository';
@@ -14,7 +15,7 @@ export class PeriodoLectivoApiService implements PeriodoLectivoRepository {
   
   private readonly injector = inject(Injector);
   private readonly http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/periodos-lectivos';
+  private baseUrl = `${API_BASE_URL}/periodos-lectivos`;
 
   findAll(pageRequest: PageRequest): Observable<PaginatedResponse<PeriodoLectivo>> {
     return this.http.get<PaginatedResponse<PeriodoLectivo>>(this.baseUrl, {params: this.buildParams(pageRequest)});

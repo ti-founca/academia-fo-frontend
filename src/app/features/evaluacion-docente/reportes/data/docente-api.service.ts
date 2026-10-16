@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@core/config/api.config";
 import { effect, inject, Injector, Signal, untracked } from "@angular/core";
 import { RepoResource } from "@shared/type/repo-resource";
 import { Docente } from "../domain/model/docente.model";
@@ -6,7 +7,7 @@ import { httpResource } from "@angular/common/http";
 import { toRepoResource } from "@shared/util/repo-resource.util";
 
 export class DocenteApiService extends DocenteRepository {
-    private readonly apiUrl = 'http://localhost:8080/api/personas';
+    private readonly apiUrl = `${API_BASE_URL}/personas`;
     private readonly injector = inject(Injector);   
     
     findById(idDocente: Signal<number | undefined>): RepoResource<Docente | undefined> {

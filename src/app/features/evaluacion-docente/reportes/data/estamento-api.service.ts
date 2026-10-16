@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@core/config/api.config";
 import { Injectable } from "@angular/core";
 import { EstamentoRepository } from "../domain/repository/estamento.repository";
 import { PageRequest } from "@shared/pagination/page-request.model";
@@ -8,7 +9,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 
 @Injectable()
 export class EstamentoApiService implements EstamentoRepository {
-    private baseUrl = 'http://localhost:8080/api/estamentos';
+    private baseUrl = `${API_BASE_URL}/estamentos`;
 
     constructor(private http: HttpClient){}
 

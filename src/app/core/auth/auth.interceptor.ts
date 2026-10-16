@@ -2,12 +2,14 @@ import { HttpErrorResponse, HttpInterceptorFn, HttpRequest } from '@angular/comm
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, of, switchMap, throwError } from 'rxjs';
+import { API_BASE_URL } from '@core/config/api.config';
 import { SesionStore } from './sesion.store';
 
-const RUTA_AUTH = '/api/auth/';
+const RUTA_AUTH = `${API_BASE_URL}/auth/`;
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  if (req.url.includes(RUTA_AUTH)) return next(req);
+  // El token solo viaja al backend propio y nunca a las rutas de login/refresh/logout
+  if (!esDelBackend(req.url) || req.url.startsWith(RUTA_AUTH)) return next(req);
 
   const sesion = inject(SesionStore);
   const router = inject(Router);
@@ -35,6 +37,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     }),
   );
 };
+
+// Se exige el separador tras la base para que "http://localhost:8080/api-otro" no coincida
+function esDelBackend(url: string): boolean {
+  return url === API_BASE_URL || url.startsWith(`${API_BASE_URL}/`) || url.startsWith(`${API_BASE_URL}?`);
+}
 
 function conToken(req: HttpRequest<unknown>, token: string): HttpRequest<unknown> {
   return req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });

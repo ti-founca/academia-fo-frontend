@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@core/config/api.config";
 import { inject, Injectable, Injector, Signal } from "@angular/core";
 import { NominaDocenteRepository } from "../domain/repository/nomina-docente.repository";
 import { Docente } from "../domain/model/docente.model";
@@ -10,7 +11,7 @@ import { NominaDocente } from "../domain/model/nomina-docente.model";
 export class NominaDocenteApiService implements NominaDocenteRepository{
     private readonly injector = inject(Injector)
     
-    private apiUrl = 'http://localhost:8080/api';
+    private apiUrl = API_BASE_URL;
     private estamentosUrl = `${this.apiUrl}/estamentos`;
     private periodosUrl = `${this.apiUrl}/periodos-lectivos`;
     

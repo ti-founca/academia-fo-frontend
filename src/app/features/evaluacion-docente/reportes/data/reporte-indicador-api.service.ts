@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@core/config/api.config";
 import { inject, Injectable, Injector, Signal } from "@angular/core";
 import { HttpClient, httpResource } from "@angular/common/http";
 import { Observable } from "rxjs";
@@ -11,8 +12,8 @@ export class ReporteIndicadorApiService implements ReporteIndicadorQuery {
     private readonly http = inject(HttpClient);
     private readonly injector = inject(Injector);
 
-    private readonly apiUrl = 'http://localhost:8080/api/evaluaciones/reportes/indicador';
-    private readonly exportarUrl = 'http://localhost:8080/api/evaluaciones/reportes/indicador/exportar';
+    private readonly apiUrl = `${API_BASE_URL}/evaluaciones/reportes/indicador`;
+    private readonly exportarUrl = `${API_BASE_URL}/evaluaciones/reportes/indicador/exportar`;
 
     getByIdPeriodo(idPeriodo: Signal<number | undefined>, idTipoDocente: Signal<number | undefined>): RepoResource<PuntajePorIndicador[]> {
         const resource = httpResource<PuntajePorIndicador[]>(() => {

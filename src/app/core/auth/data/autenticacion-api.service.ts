@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@core/config/api.config';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
@@ -17,7 +18,7 @@ interface TokensResponse {
 @Injectable()
 export class AutenticacionApiService implements AutenticacionRepository {
   private readonly http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/auth';
+  private baseUrl = `${API_BASE_URL}/auth`;
 
   iniciarSesion(correo: string, clave: string): Observable<Sesion> {
     return this.http

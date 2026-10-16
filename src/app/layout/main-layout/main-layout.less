@@ -100,8 +100,25 @@ nz-header {
   }
 }
 
-.user-name {
-  line-height: normal;
+// El menú desplegable se renderiza en un overlay fuera del componente: se requiere ::ng-deep.
+// ng-zorro envuelve el contenido del ítem en un span, por eso cada línea se declara como bloque
+::ng-deep .user-info.ant-dropdown-menu-item-disabled {
+  line-height: 1.5;
+  cursor: default;
+
+  .user-info-nombre,
+  .user-info-correo {
+    display: block;
+  }
+
+  .user-info-nombre {
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 600;
+  }
+
+  .user-info-correo {
+    font-size: 12px;
+  }
 }
 
 nz-content {

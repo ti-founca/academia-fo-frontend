@@ -1,0 +1,96 @@
+name: Build y despliegue - academia-fo-frontend
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend
+  cancel-in-progress: false
+
+env:
+  DIST: dist/academia-fo-front/browser
+  DEPLOY_BASE: /var/www/academia-fo
+  APP_HOST: academia.odontounca.edu.py
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Compilar
+        run: npm run build -- --configuration production
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: ${{ env.DIST }}
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: deploy
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-dist
+          path: build
+
+      - name: Conectar a la VPN WireGuard
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq wireguard-tools
+          # Se eliminan las líneas DNS: requieren resolvconf y no hacen falta para SSH por IP
+          echo "${{ secrets.WG_CONFIG }}" | grep -v '^DNS' | sudo tee /etc/wireguard/wg0.conf > /dev/null
+          sudo chmod 600 /etc/wireguard/wg0.conf
+          sudo wg-quick up wg0
+
+      - name: Preparar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_deploy
+          chmod 600 ~/.ssh/id_deploy
+          echo "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          cat >> ~/.ssh/config <<EOF
+          Host vps
+            HostName ${{ secrets.VPS_HOST }}
+            User ${{ secrets.VPS_USER }}
+            Port ${{ secrets.VPS_PORT || 22 }}
+            IdentityFile ~/.ssh/id_deploy
+          EOF
+
+      - name: Subir archivos
+        run: |
+          rsync -az --delete build/ "vps:${DEPLOY_BASE}/releases/${GITHUB_SHA}/"
+
+      - name: Activar versión
+        run: |
+          ssh vps "DEPLOY_BASE=${DEPLOY_BASE} bash -s -- ${GITHUB_SHA}" < deploy/remote-deploy.sh
+
+      - name: Verificar
+        run: |
+          ssh vps "test -f ${DEPLOY_BASE}/current/index.html && \
+                   curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' -H 'Host: ${APP_HOST}' http://127.0.0.1/"
+
+      - name: Desconectar VPN
+        if: always()
+        run: sudo wg-quick down wg0 || true

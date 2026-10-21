@@ -1,4 +1,4 @@
-name: Build y despliegue - academia-fo-frontend
+name: Deploy academia-fo-frontend
 
 on:
   push:
@@ -10,86 +10,56 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  DIST: dist/academia-fo-front/browser
-  DEPLOY_BASE: /var/www/academia-fo
-  APP_HOST: academia.odontounca.edu.py
+  IMAGE: localhost/academia-fo-frontend
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Instalar dependencias
-        run: npm ci --no-audit --no-fund
-
-      - name: Compilar
-        run: npm run build -- --configuration production
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: ${{ env.DIST }}
-          retention-days: 7
-
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    permissions:
-      contents: read
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          sparse-checkout: deploy
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: build
+      - name: Construir imagen
+        run: podman build -t $IMAGE:latest -t $IMAGE:${{ github.sha }} .
 
-      - name: Conectar a la VPN WireGuard
+      - name: Conectar VPN WireGuard
+        env:
+          WG_CONFIG: ${{ secrets.WG_CONFIG }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq wireguard-tools
-          # Se eliminan las líneas DNS: requieren resolvconf y no hacen falta para SSH por IP
-          echo "${{ secrets.WG_CONFIG }}" | grep -v '^DNS' | sudo tee /etc/wireguard/wg0.conf > /dev/null
+          printf '%s\n' "$WG_CONFIG" | sudo tee /etc/wireguard/wg0.conf > /dev/null
+          sudo sed -i '/^DNS/d' /etc/wireguard/wg0.conf   # evita depender de resolvconf
           sudo chmod 600 /etc/wireguard/wg0.conf
           sudo wg-quick up wg0
 
-      - name: Preparar SSH
+      - name: Configurar SSH
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_deploy
-          chmod 600 ~/.ssh/id_deploy
-          echo "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-          cat >> ~/.ssh/config <<EOF
-          Host vps
-            HostName ${{ secrets.VPS_HOST }}
-            User ${{ secrets.VPS_USER }}
-            Port ${{ secrets.VPS_PORT || 22 }}
-            IdentityFile ~/.ssh/id_deploy
-          EOF
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_ed25519
 
-      - name: Subir archivos
+      - name: Enviar imagen al VPS
+        env:
+          TARGET: ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
         run: |
-          rsync -az --delete build/ "vps:${DEPLOY_BASE}/releases/${GITHUB_SHA}/"
+          podman save $IMAGE:latest | gzip | ssh $TARGET '
+            podman tag localhost/academia-fo-frontend:latest localhost/academia-fo-frontend:previous 2>/dev/null || true
+            gunzip | podman load'
 
-      - name: Activar versión
+      - name: Reiniciar servicio y verificar
+        env:
+          TARGET: ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
         run: |
-          ssh vps "DEPLOY_BASE=${DEPLOY_BASE} bash -s -- ${GITHUB_SHA}" < deploy/remote-deploy.sh
-
-      - name: Verificar
-        run: |
-          ssh vps "test -f ${DEPLOY_BASE}/current/index.html && \
-                   curl -fsS -o /dev/null -w 'HTTP %{http_code}\n' -H 'Host: ${APP_HOST}' http://127.0.0.1/"
+          ssh $TARGET '
+            export XDG_RUNTIME_DIR=/run/user/$(id -u)
+            systemctl --user restart academia-fo-frontend
+            sleep 3
+            curl -fsS -o /dev/null http://127.0.0.1:8086/ && echo "OK: respondiendo en 8086"
+            podman image prune -f'
 
       - name: Desconectar VPN
         if: always()

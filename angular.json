@@ -66,6 +66,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "outputPath": "dist",
               "outputHashing": "all"
             },
             "development": {

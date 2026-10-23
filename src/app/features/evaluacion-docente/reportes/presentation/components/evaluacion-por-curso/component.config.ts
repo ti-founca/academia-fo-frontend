@@ -9,11 +9,13 @@ import { EstamentoRepository } from "@features/evaluacion-docente/reportes/domai
 import { NzBadgeModule } from "ng-zorro-antd/badge";
 import { NzButtonModule } from "ng-zorro-antd/button";
 import { NzCollapseModule } from "ng-zorro-antd/collapse";
+import { NzEmptyModule } from "ng-zorro-antd/empty";
 import { NzFlexModule } from "ng-zorro-antd/flex";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzIconModule } from "ng-zorro-antd/icon";
 import { NzSegmentedModule } from "ng-zorro-antd/segmented";
 import { NzSelectModule } from "ng-zorro-antd/select";
+import { NzSkeletonModule } from "ng-zorro-antd/skeleton";
 import { NzSpaceModule } from "ng-zorro-antd/space";
 import { NzTableModule } from "ng-zorro-antd/table";
 import { NzTabsModule } from "ng-zorro-antd/tabs";
@@ -32,7 +34,9 @@ export default {
         NzSegmentedModule,
         NzCollapseModule,
         FormsModule,
-        NzSelectModule
+        NzSelectModule,
+        NzEmptyModule,
+        NzSkeletonModule
     ],
     providers: [
         EstamentoFacade,

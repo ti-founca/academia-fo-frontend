@@ -1,31 +1,41 @@
 <nz-tabs nzTabPosition="left">
-@for (anho of anhos; track $index) {
+@for (anho of anhos; track anho.anho) {
     <nz-tab [nzTitle]="anho.nombre">
-        <nz-table #tablaDocenteMateria
-            [nzData]="getEvauacionPorCurso(anho.anho)()"
-            [nzLoading]="isEvaluacionesLoading()"            
-            nzSize="small">
-            <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Docente</th>
-                    <th>Materia</th>
-                    <th>Puntaje</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (evaluacion of tablaDocenteMateria.data; track $index) {
-                <tr>
-                    <td>{{ evaluacion.tipoDocente.descripcion }}</td>
-                    <td>{{ evaluacion.docente.nombres }} {{ evaluacion.docente.apellidos }}</td>
-                    <td>{{ evaluacion.materia.descripcion }}</td>
-                    <td>{{ evaluacion.puntajeGeneral }}</td>
-                </tr>
-                }
-            </tbody>
-        </nz-table>
-    </nz-tab>   
+        @let grupos = reportePorCurso().get(anho.anho) ?? [];
+        @if (isEvaluacionesLoading()) {
+            <nz-skeleton [nzActive]="true"></nz-skeleton>
+        }
+        @else if (grupos.length == 0) {
+            <nz-empty nzNotFoundContent="Sin evaluaciones para este curso"></nz-empty>
+        }
+        @else {
+            <nz-tabs nzType="card">
+            @for (grupo of grupos; track grupo.tipoDocente.id) {
+                <nz-tab [nzTitle]="grupo.tipoDocente.descripcion">
+                    <nz-table #tablaDocenteMateria
+                        [nzData]="grupo.evaluaciones"
+                        nzSize="small">
+                        <thead>
+                            <tr>
+                                <th>Docente</th>
+                                <th>Materia</th>
+                                <th>Puntaje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (evaluacion of tablaDocenteMateria.data; track $index) {
+                            <tr>
+                                <td>{{ evaluacion.docente.nombres }} {{ evaluacion.docente.apellidos }}</td>
+                                <td>{{ evaluacion.materia.descripcion }}</td>
+                                <td>{{ evaluacion.puntajeGeneral }}</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </nz-table>
+                </nz-tab>
+            }
+            </nz-tabs>
+        }
+    </nz-tab>
 }
 </nz-tabs>
-
-

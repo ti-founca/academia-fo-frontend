@@ -1,11 +1,17 @@
-import { Component, computed, inject, input, Signal } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import componentConfig from './component.config';
 import { EvaluacionGeneralDocenteFacade } from '@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente.facade';
 import { EvaluacionDocenteMateria } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-docente-materia.model';
+import { TipoDocente } from '@features/evaluacion-docente/reportes/domain/model/tipo-docente.model';
 
 interface Anho {
   anho: number,
   nombre: string;
+}
+
+interface GrupoTipoDocente {
+  tipoDocente: TipoDocente;
+  evaluaciones: EvaluacionDocenteMateria[];
 }
 
 @Component({
@@ -27,6 +33,23 @@ export class EvaluacionPorCurso {
     if(evaluaciones == null) return [];
     return evaluaciones.filter(ed => idTipoDoc != null ? ed.tipoDocente.id == idTipoDoc : true)
   });
+  // anho del curso → evaluaciones agrupadas por tipo de docente.
+  readonly reportePorCurso = computed<Map<number, GrupoTipoDocente[]>>(() => {
+    const porAnho = new Map<number, Map<number, GrupoTipoDocente>>();
+    for (const ed of this.evaluacionesDocentesMaterias()) {
+      const porTipoDocente = porAnho.get(ed.materia.curso.anho) ?? new Map();
+      porAnho.set(ed.materia.curso.anho, porTipoDocente);
+      const grupo = porTipoDocente.get(ed.tipoDocente.id) ?? { tipoDocente: ed.tipoDocente, evaluaciones: [] };
+      porTipoDocente.set(ed.tipoDocente.id, grupo);
+      grupo.evaluaciones.push(ed);
+    }
+
+    const resultado = new Map<number, GrupoTipoDocente[]>();
+    for (const [anho, porTipoDocente] of porAnho) {
+      resultado.set(anho, [...porTipoDocente.values()].sort((a, b) => a.tipoDocente.id - b.tipoDocente.id));
+    }
+    return resultado;
+  });
   readonly isEvaluacionesLoading = computed(() => this.evaluacionDocenteMateriaResource.isLoading());
   readonly exportarDisabled = computed(() => this.evaluacionesDocentesMaterias().length === 0);
 
@@ -42,11 +65,5 @@ export class EvaluacionPorCurso {
     const idPeriodo = this.idPeriodo();
     if(idPeriodo == null) return;
     this.evaluacionGeneralDocenteFacade.exportarPorCurso(idPeriodo, this.idTipoDocente());
-  }
-
-  getEvauacionPorCurso(anho: number): Signal<EvaluacionDocenteMateria[]>{
-    return computed(() => {
-      return this.evaluacionesDocentesMaterias().filter(ed => ed.materia.curso.anho == anho)
-    })
   }
 }

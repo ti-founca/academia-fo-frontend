@@ -18,8 +18,8 @@ export class EvaluacionGeneralDocenteFacade {
     return this.reporteEvaluacionGeneralQuery.getByIdPeriodo(idPeriodo);
   }
 
-  getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idsEstamento: Signal<number[]>): RepoResource<SinEvaluacion[]> {
-    return this.reporteEvaluacionGeneralQuery.getSinEvaluacionByIdPeriodo(idPeriodo, idsEstamento);
+  getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idEstamento: Signal<number | undefined>): RepoResource<SinEvaluacion[]> {
+    return this.reporteEvaluacionGeneralQuery.getSinEvaluacionByIdPeriodo(idPeriodo, idEstamento);
   }
 
   getByIdPeriodoIdDocente(idPeriodo: Signal<number | undefined>, idDocente: Signal<number | undefined>) {

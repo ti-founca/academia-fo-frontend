@@ -27,14 +27,14 @@ export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGene
         return toRepoResource(resource);
     }
 
-    getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idsEstamento: Signal<number[]>): RepoResource<SinEvaluacion[]> {
+    getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idEstamento: Signal<number | undefined>): RepoResource<SinEvaluacion[]> {
         const resource = httpResource<SinEvaluacion[]>(() => {
             const idPer = idPeriodo();
-            const ids = idsEstamento();
-            if(idPer == null || ids.length === 0) return undefined;
+            const idEst = idEstamento();
+            if(idPer == null || idEst == null) return undefined;
             return {
                 url: `${this.periodosApiUrl}/${idPer}/reportes/docentes/sin-evaluacion`,
-                params: { idsEstamento: ids }
+                params: { idsEstamento: idEst }
             };
         }, { defaultValue: [], injector: this.injector });
         return toRepoResource(resource);

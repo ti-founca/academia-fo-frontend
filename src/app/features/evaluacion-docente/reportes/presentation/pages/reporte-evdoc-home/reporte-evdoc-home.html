@@ -36,7 +36,7 @@
     @if (vistaActiva() == 'Por Docente') {
         <acadfo-evaluacion-por-docente
             [idPeriodoLectivo]="idPeriodoLectivo()"
-            [idsEstamentoSinEvaluacion]="idsEstamentoSinEvaluacion()">
+            [idEstamentoSinEvaluacion]="idEstamentoSinEvaluacion()">
         </acadfo-evaluacion-por-docente>
     }
     @else if (vistaActiva() == 'Por Curso') {
@@ -66,8 +66,8 @@
 <ng-template #filtrosTpl>
     @if (vistaActiva() == 'Por Docente') {
         <acadfo-evdoc-form-filtro-docente
-            [idsEstamento]="idsEstamentoSinEvaluacion()"
-            (idsEstamentoChange)="idsEstamentoSinEvaluacion.set($event)">
+            [idEstamento]="idEstamentoSinEvaluacion()"
+            (idEstamentoChange)="idEstamentoSinEvaluacion.set($event ?? undefined)">
         </acadfo-evdoc-form-filtro-docente>
     }
     @if (vistaActiva() == 'Por Curso' || vistaActiva() == 'Por Estamento') {

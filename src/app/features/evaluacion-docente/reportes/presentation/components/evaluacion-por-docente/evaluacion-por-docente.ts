@@ -1,16 +1,7 @@
 import { Component, computed, ElementRef, inject, input, Signal, signal, viewChild } from '@angular/core';
 import { EvaluacionGeneralDocenteFacade } from '../../../application/facade/evaluacion-general-docente.facade';
 import componentConfig from './component.config';
-import { EvaluacionDocente, PuntajeMateria } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-docente.model';
-import { Estamento } from '@features/evaluacion-docente/reportes/application/read-model/estamento.model';
-
-interface PuntajeMateriaFiltrado extends PuntajeMateria {
-  estamentosSinEvaluacion: Estamento[];
-}
-
-interface EvaluacionDocenteFiltrado extends EvaluacionDocente {
-  puntajes: PuntajeMateriaFiltrado[];
-}
+import { EvaluacionDocente } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-docente.model';
 
 @Component({
   selector: 'acadfo-evaluacion-por-docente',
@@ -26,44 +17,28 @@ export class EvaluacionPorDocente {
   readonly visible = signal(false);
   readonly expandSetSignal = signal(new Set<number>());
   readonly idPeriodoLectivo = input<number | null>();
-  readonly idsEstamentoSinEvaluacion = input<number[]>([]);
+  readonly idEstamentoSinEvaluacion = input<number | undefined>();
   private readonly idPeriodo = computed(() => this.idPeriodoLectivo() ?? undefined);
   readonly evaluacionGeneralResource = this.evaluacionGeneralDocenteFacade.getByIdPeriodo(this.idPeriodo);
-  private readonly sinEvaluacionResource = this.evaluacionGeneralDocenteFacade.getSinEvaluacionByIdPeriodo(this.idPeriodo, this.idsEstamentoSinEvaluacion);
+  private readonly sinEvaluacionResource = this.evaluacionGeneralDocenteFacade.getSinEvaluacionByIdPeriodo(this.idPeriodo, this.idEstamentoSinEvaluacion);
 
-  readonly filtroSinEvaluacionActivo = computed(() => this.idsEstamentoSinEvaluacion().length > 0);
   readonly isLoading = computed(() => this.evaluacionGeneralResource.isLoading() || this.sinEvaluacionResource.isLoading());
 
-  // "idDocente-idMateria-idTipoDocente" → estamentos seleccionados en los que no tiene evaluaciones
-  private readonly estamentosSinEvaluacionPorMateria = computed(() => {
-    const mapa = new Map<string, Estamento[]>();
-    for (const se of this.sinEvaluacionResource.value() ?? []) {
-      const clave = this.clave(se.idDocente, se.idMateria, se.idTipoDocente);
-      const estamentos = mapa.get(clave) ?? [];
-      estamentos.push(se.estamento);
-      mapa.set(clave, estamentos);
-    }
-    for (const estamentos of mapa.values()) estamentos.sort((a, b) => a.id - b.id);
-    return mapa;
-  });
+  // Claves "idDocente-idMateria-idTipoDocente" sin evaluaciones en el estamento seleccionado
+  private readonly materiasSinEvaluacion = computed(() => new Set(
+    (this.sinEvaluacionResource.value() ?? []).map(se => this.clave(se.idDocente, se.idMateria, se.idTipoDocente))
+  ));
 
-  // Con el filtro activo quedan las materias a las que les falta al menos uno de los estamentos
-  // seleccionados, y solo los docentes que conservan alguna materia
-  readonly evaluacionGeneralList = computed<EvaluacionDocenteFiltrado[]>(() => {
+  // Con el filtro activo quedan las materias sin evaluaciones del estamento
+  // y solo los docentes que conservan alguna materia
+  readonly evaluacionGeneralList = computed<EvaluacionDocente[]>(() => {
     const docentes = this.evaluacionGeneralResource.value() ?? [];
-    if (!this.filtroSinEvaluacionActivo()) {
-      return docentes.map(docente => ({
-        ...docente,
-        puntajes: docente.puntajes.map(p => ({ ...p, estamentosSinEvaluacion: [] }))
-      }));
-    }
-    const mapa = this.estamentosSinEvaluacionPorMateria();
+    if (this.idEstamentoSinEvaluacion() == null) return docentes;
+    const claves = this.materiasSinEvaluacion();
     return docentes
       .map(docente => ({
         ...docente,
-        puntajes: docente.puntajes
-          .map(p => ({ ...p, estamentosSinEvaluacion: mapa.get(this.clave(docente.idDocente, p.materia.id, p.tipoDocente.id)) ?? [] }))
-          .filter(p => p.estamentosSinEvaluacion.length > 0)
+        puntajes: docente.puntajes.filter(p => claves.has(this.clave(docente.idDocente, p.materia.id, p.tipoDocente.id)))
       }))
       .filter(docente => docente.puntajes.length > 0);
   });

@@ -44,9 +44,6 @@
                   <th>Materia</th>
                   <th>Tipo. Docente</th>
                   <th>Puntaje</th>
-                  @if (filtroSinEvaluacionActivo()) {
-                    <th>Estamentos sin evaluación</th>
-                  }
                 </tr>
               </thead>
               <tbody>
@@ -56,13 +53,6 @@
                     <td>{{ detalle.materia.descripcion }}</td>
                     <td>{{ detalle.tipoDocente.descripcion }}</td>
                     <td>{{ detalle.puntajeGeneral | number:'1.2-2' }}</td>
-                    @if (filtroSinEvaluacionActivo()) {
-                      <td>
-                        @for (estamento of detalle.estamentosSinEvaluacion; track estamento.id) {
-                          <nz-tag nzColor="warning">{{ estamento.descripcion }}</nz-tag>
-                        }
-                      </td>
-                    }
                   </tr>
                 }
               </tbody>

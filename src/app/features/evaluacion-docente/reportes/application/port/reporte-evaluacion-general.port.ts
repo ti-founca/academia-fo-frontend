@@ -7,7 +7,7 @@ import { SinEvaluacion } from "../read-model/sin-evaluacion.model";
 
 export abstract class ReporteEvaluacionGeneralQuery {
     abstract getByIdPeriodo(idPeriodo: Signal<number | undefined>): RepoResource<EvaluacionDocente[]>;
-    abstract getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idsEstamento: Signal<number[]>): RepoResource<SinEvaluacion[]>;
+    abstract getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idEstamento: Signal<number | undefined>): RepoResource<SinEvaluacion[]>;
     abstract getByIdPeriodoIdDocente(idPeriodo: Signal<number | undefined>, idDocente: Signal<number | undefined>): RepoResource<EvaluacionDocente | undefined>;
     abstract getReporteDocenteMateriaByIdPeriodo(idPeriodo: Signal<number | undefined>): RepoResource<EvaluacionDocenteMateria[]>;
     abstract exportarExcel(idPeriodo: number): Observable<Blob>;

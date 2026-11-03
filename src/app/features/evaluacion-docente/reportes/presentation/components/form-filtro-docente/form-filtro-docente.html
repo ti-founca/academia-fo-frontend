@@ -1,13 +1,12 @@
 <div nz-row [nzGutter]="[8,8]">
     <div nz-col nzSpan="24">
-        Estamentos sin evaluaciones
+        Estamento sin evaluaciones
     </div>
     <div nz-col nzSpan="24">
         <nz-select
-            nzMode="multiple"
             nzPlaceHolder="Seleccionar..."
             style="width: 100%;"
-            [formControl]="estamentosCtrl"
+            [formControl]="estamentoCtrl"
             [nzLoading]="estamentoFacade.loading()"
             nzAllowClear>
             @for (estamento of estamentoFacade.estamentoList(); track estamento.id) {

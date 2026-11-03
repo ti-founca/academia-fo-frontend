@@ -14,9 +14,9 @@ import { outputFromObservable } from '@angular/core/rxjs-interop';
 export class FormFiltroDocente implements OnInit {
   readonly estamentoFacade = inject(EstamentoFacade);
 
-  readonly idsEstamento = input<number[]>([]);
-  readonly estamentosCtrl = new FormControl<number[]>([], { nonNullable: true });
-  readonly idsEstamentoChange = outputFromObservable(this.estamentosCtrl.valueChanges);
+  readonly idEstamento = input<number | undefined>();
+  readonly estamentoCtrl = new FormControl<number | null>(null);
+  readonly idEstamentoChange = outputFromObservable(this.estamentoCtrl.valueChanges);
 
   constructor(){
     this.estamentoFacade.sort.set({ orders: [{ field: "id", direction: "asc" }] });
@@ -25,6 +25,6 @@ export class FormFiltroDocente implements OnInit {
 
   ngOnInit(): void {
     // El drawer recrea el formulario al abrirse: se restaura la selección vigente
-    this.estamentosCtrl.setValue(this.idsEstamento(), { emitEvent: false });
+    this.estamentoCtrl.setValue(this.idEstamento() ?? null, { emitEvent: false });
   }
 }

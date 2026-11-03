@@ -3,7 +3,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 import componentConfig from './component.config';
 import { Docente } from '@features/evaluacion-docente/reportes/domain/model/docente.model';
 import { NominaDocenteFacade } from '@features/evaluacion-docente/reportes/application/facade/nomina-docente.facade';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DocenteFacade } from '@features/evaluacion-docente/reportes/application/facade/docente.facade';
 import { EvaluacionGeneralDocenteFacade } from '@features/evaluacion-docente/reportes/application/facade/evaluacion-general-docente.facade';
 import { EvaluacionDocente, PuntajeMateria } from '@features/evaluacion-docente/reportes/application/read-model/evaluacion-docente.model';
@@ -30,6 +30,7 @@ export class ReporteEvdocDocente {
   readonly idDocente = signal<number | undefined>(undefined);
   
   private readonly aroute: ActivatedRoute = inject(ActivatedRoute);
+  private readonly router: Router = inject(Router);
   private readonly notif: NzNotificationService = inject(NzNotificationService);
   
   readonly vistas = [...VISTAS]; 
@@ -77,6 +78,11 @@ export class ReporteEvdocDocente {
     const doc = this.docente();
     const nombre = doc == null ? `${idDoc}` : `${doc.apellidos}_${doc.nombres}`;
     this.evaluacionGeneralDocenteFacade.exportarPdfDocente(idPer, idDoc, `PuntajeDocente_${nombre}.pdf`.replace(/\s+/g, '_'));
+  }
+
+  volver() {
+    const idPer = this.idPeriodo();
+    this.router.navigate(idPer == null ? ['.'] : [idPer], { relativeTo: this.aroute.parent });
   }
 
   addExpand(id: string) {

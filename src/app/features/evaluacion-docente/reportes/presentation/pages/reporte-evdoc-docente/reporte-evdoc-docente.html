@@ -8,9 +8,12 @@
                     Exportar PDF
                 </button>
             </div>
-            <did nz-col nz-flex [nzGap]="12">
+            <div nz-col nz-flex [nzGap]="12" nzAlign="center">
                 <span><i><strong>{{ periodoLectivoResource.value()?.descripcion }}</strong></i></span>
-            </did>
+                <button nz-button nzType="default" (click)="volver()" title="Volver a la vista general de docentes">
+                    <nz-icon nzType="arrow-left" nzTheme="outline" />
+                </button>
+            </div>
         </div>
   </div>
     @if (!docenteResource.isLoading() && !docente()) {

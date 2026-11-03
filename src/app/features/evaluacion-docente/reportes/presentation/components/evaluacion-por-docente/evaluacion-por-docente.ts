@@ -42,8 +42,7 @@ export class EvaluacionPorDocente {
       }))
       .filter(docente => docente.puntajes.length > 0);
   });
-  // La exportación todavía no aplica el filtro, por eso se habilita según el reporte completo
-  readonly exportarDisabled: Signal<boolean> = computed(() => (this.evaluacionGeneralResource.value() ?? []).length === 0);
+  readonly exportarDisabled: Signal<boolean> = computed(() => this.evaluacionGeneralList().length === 0);
 
   addExpand(id: number) {
     this.expandSetSignal.update((set) => {
@@ -75,7 +74,7 @@ export class EvaluacionPorDocente {
   }*/
 
   public exportarEvaluacionPorDocente(){
-    this.evaluacionGeneralDocenteFacade.exportar(this.idPeriodoLectivo() ?? -1);
+    this.evaluacionGeneralDocenteFacade.exportar(this.idPeriodoLectivo() ?? -1, this.idEstamentoSinEvaluacion());
   }
 
   abrirFiltros(){

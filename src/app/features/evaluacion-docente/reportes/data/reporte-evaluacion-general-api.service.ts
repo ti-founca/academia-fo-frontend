@@ -40,13 +40,10 @@ export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGene
         return toRepoResource(resource);
     }
 
-    exportarExcel(idPeriodo: number): Observable<Blob> {
-        return this.http.get(this.baseUrl,
-            {
-                responseType: 'blob',
-                params: { idPeriodo }
-            }
-        );
+    exportarExcel(idPeriodo: number, idEstamentoSinEvaluacion?: number): Observable<Blob> {
+        const params: Record<string, number> = { idPeriodo };
+        if(idEstamentoSinEvaluacion != null) params['idEstamentoSinEvaluacion'] = idEstamentoSinEvaluacion;
+        return this.http.get(this.baseUrl, { responseType: 'blob', params });
     }
 
     exportarExcelPorCurso(idPeriodo: number, idTipoDocente?: number): Observable<Blob> {

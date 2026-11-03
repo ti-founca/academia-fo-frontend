@@ -26,9 +26,9 @@ export class EvaluacionGeneralDocenteFacade {
     return this.reporteEvaluacionGeneralQuery.getByIdPeriodoIdDocente(idPeriodo, idDocente);
   }
 
-  exportar(idPeriodoLectivo: number) {
+  exportar(idPeriodoLectivo: number, idEstamentoSinEvaluacion?: number) {
       this.loading.set(true);
-      this.reporteEvaluacionGeneralQuery.exportarExcel(idPeriodoLectivo)
+      this.reporteEvaluacionGeneralQuery.exportarExcel(idPeriodoLectivo, idEstamentoSinEvaluacion)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
           next: blob => {

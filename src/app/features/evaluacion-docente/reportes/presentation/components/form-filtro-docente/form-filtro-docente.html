@@ -1,15 +1,18 @@
 <div nz-row [nzGutter]="[8,8]">
     <div nz-col nzSpan="24">
-      <!-- <nz-select
-          [formControl]="periodoLectivoCtrl"
-          [nzLoading]="periodoLectivoFacade.loading()"
-          (nzScrollToBottom)="periodoLectivoFacade.loadNextPage()"
-          style="width: 100%"
-          nzPlaceHolder="Periodo Lectivo..."
-          nzAllowClear>
-          @for (pl of periodoLectivoFacade.periodoLectivoList(); track pl.id) {
-            <nz-option [nzValue]="pl.id" [nzLabel]="pl.descripcion"></nz-option>
-          }
-        </nz-select> -->
-      </div>
-  </div>
+        Estamentos sin evaluaciones
+    </div>
+    <div nz-col nzSpan="24">
+        <nz-select
+            nzMode="multiple"
+            nzPlaceHolder="Seleccionar..."
+            style="width: 100%;"
+            [formControl]="estamentosCtrl"
+            [nzLoading]="estamentoFacade.loading()"
+            nzAllowClear>
+            @for (estamento of estamentoFacade.estamentoList(); track estamento.id) {
+                <nz-option [nzValue]="estamento.id" [nzLabel]="estamento.descripcion"></nz-option>
+            }
+        </nz-select>
+    </div>
+</div>

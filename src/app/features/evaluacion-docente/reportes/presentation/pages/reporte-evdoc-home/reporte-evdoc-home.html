@@ -34,7 +34,10 @@
   </div>
   <div nz-col nzSpan="24">
     @if (vistaActiva() == 'Por Docente') {
-        <acadfo-evaluacion-por-docente [idPeriodoLectivo]="idPeriodoLectivo()"></acadfo-evaluacion-por-docente>
+        <acadfo-evaluacion-por-docente
+            [idPeriodoLectivo]="idPeriodoLectivo()"
+            [idsEstamentoSinEvaluacion]="idsEstamentoSinEvaluacion()">
+        </acadfo-evaluacion-por-docente>
     }
     @else if (vistaActiva() == 'Por Curso') {
         <acadfo-evaluacion-por-curso
@@ -62,7 +65,10 @@
 
 <ng-template #filtrosTpl>
     @if (vistaActiva() == 'Por Docente') {
-        <acadfo-evdoc-form-filtro-docente></acadfo-evdoc-form-filtro-docente>
+        <acadfo-evdoc-form-filtro-docente
+            [idsEstamento]="idsEstamentoSinEvaluacion()"
+            (idsEstamentoChange)="idsEstamentoSinEvaluacion.set($event)">
+        </acadfo-evdoc-form-filtro-docente>
     }
     @if (vistaActiva() == 'Por Curso' || vistaActiva() == 'Por Estamento') {
         <acadfo-evdoc-form-filtro-curso

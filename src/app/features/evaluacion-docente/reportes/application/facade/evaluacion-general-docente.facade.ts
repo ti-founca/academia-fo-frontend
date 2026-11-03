@@ -4,6 +4,7 @@ import { ReporteEvaluacionGeneralQuery } from '../port/reporte-evaluacion-genera
 import { finalize } from 'rxjs';
 import { RepoResource } from '@shared/type/repo-resource';
 import { EvaluacionDocenteMateria } from '../read-model/evaluacion-docente-materia.model';
+import { SinEvaluacion } from '../read-model/sin-evaluacion.model';
 
 @Injectable()
 export class EvaluacionGeneralDocenteFacade {
@@ -15,6 +16,10 @@ export class EvaluacionGeneralDocenteFacade {
 
   getByIdPeriodo(idPeriodo: Signal<number | undefined>) {
     return this.reporteEvaluacionGeneralQuery.getByIdPeriodo(idPeriodo);
+  }
+
+  getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idsEstamento: Signal<number[]>): RepoResource<SinEvaluacion[]> {
+    return this.reporteEvaluacionGeneralQuery.getSinEvaluacionByIdPeriodo(idPeriodo, idsEstamento);
   }
 
   getByIdPeriodoIdDocente(idPeriodo: Signal<number | undefined>, idDocente: Signal<number | undefined>) {

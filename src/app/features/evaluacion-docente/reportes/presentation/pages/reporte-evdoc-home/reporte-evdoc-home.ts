@@ -36,8 +36,10 @@ export class ReporteEvdocHome {
   readonly periodoLectivoCtrl = new FormControl<number | null>(null);
   readonly idPeriodoLectivo = toSignal(this.periodoLectivoCtrl.valueChanges, { initialValue: null });
   readonly idTipoDocenteFiltro = signal<number | undefined>(undefined);
+  readonly idsEstamentoSinEvaluacion = signal<number[]>([]);
   readonly cantidadFiltros = computed(() => {
     switch (this.vistaActiva()) {
+      case 'Por Docente': return this.idsEstamentoSinEvaluacion().length > 0 ? 1 : 0;
       case 'Por Curso':
       case 'Por Estamento': return this.idTipoDocenteFiltro() != null ? 1 : 0;
       default: return 0;

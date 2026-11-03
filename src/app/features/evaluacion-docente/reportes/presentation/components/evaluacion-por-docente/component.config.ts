@@ -14,6 +14,7 @@ import { NzBadgeModule } from "ng-zorro-antd/badge"
 import { RouterModule } from "@angular/router"
 import { NzSegmentedModule } from "ng-zorro-antd/segmented"
 import { DecimalPipe } from "@angular/common"
+import { NzTagModule } from "ng-zorro-antd/tag"
 
 export default {
     imports: [
@@ -29,7 +30,8 @@ export default {
         NzBadgeModule,
         RouterModule,
         NzSegmentedModule,
-        DecimalPipe
+        DecimalPipe,
+        NzTagModule
     ],
     providers: [
         EvaluacionGeneralDocenteFacade,

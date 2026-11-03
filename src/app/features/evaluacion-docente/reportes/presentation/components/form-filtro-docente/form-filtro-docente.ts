@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { PeriodoLectivoFacade } from '@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade';
+import { EstamentoFacade } from '@features/evaluacion-docente/reportes/application/facade/estamento.facade';
 import componentConfig from './component.config';
 import { outputFromObservable } from '@angular/core/rxjs-interop';
 
@@ -11,11 +11,20 @@ import { outputFromObservable } from '@angular/core/rxjs-interop';
   templateUrl: './form-filtro-docente.html',
   styleUrl: './form-filtro-docente.less',
 })
-export class FormFiltroDocente {
-  readonly periodoLectivoCtrl = new FormControl<number | null>(null);
-  readonly idPeriodoLectivo = outputFromObservable(this.periodoLectivoCtrl.valueChanges)
+export class FormFiltroDocente implements OnInit {
+  readonly estamentoFacade = inject(EstamentoFacade);
 
-  constructor(
-    public periodoLectivoFacade: PeriodoLectivoFacade,
-  ){ }
+  readonly idsEstamento = input<number[]>([]);
+  readonly estamentosCtrl = new FormControl<number[]>([], { nonNullable: true });
+  readonly idsEstamentoChange = outputFromObservable(this.estamentosCtrl.valueChanges);
+
+  constructor(){
+    this.estamentoFacade.sort.set({ orders: [{ field: "id", direction: "asc" }] });
+    this.estamentoFacade.pageSize.set(50);
+  }
+
+  ngOnInit(): void {
+    // El drawer recrea el formulario al abrirse: se restaura la selección vigente
+    this.estamentosCtrl.setValue(this.idsEstamento(), { emitEvent: false });
+  }
 }

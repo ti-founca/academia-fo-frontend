@@ -7,6 +7,7 @@ import { EvaluacionDocente } from "../application/read-model/evaluacion-docente.
 import { RepoResource } from "@shared/type/repo-resource";
 import { toRepoResource } from "@shared/util/repo-resource.util";
 import { EvaluacionDocenteMateria } from "../application/read-model/evaluacion-docente-materia.model";
+import { SinEvaluacion } from "../application/read-model/sin-evaluacion.model";
 
 @Injectable()
 export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGeneralQuery {
@@ -23,6 +24,19 @@ export class ReporteEvaluacionGeneralApiService implements ReporteEvaluacionGene
             if(idPer == null) return undefined;
             return `${this.periodosApiUrl}/${idPer}/reportes/docentes`;
         }, {defaultValue: [], injector: this.injector });
+        return toRepoResource(resource);
+    }
+
+    getSinEvaluacionByIdPeriodo(idPeriodo: Signal<number | undefined>, idsEstamento: Signal<number[]>): RepoResource<SinEvaluacion[]> {
+        const resource = httpResource<SinEvaluacion[]>(() => {
+            const idPer = idPeriodo();
+            const ids = idsEstamento();
+            if(idPer == null || ids.length === 0) return undefined;
+            return {
+                url: `${this.periodosApiUrl}/${idPer}/reportes/docentes/sin-evaluacion`,
+                params: { idsEstamento: ids }
+            };
+        }, { defaultValue: [], injector: this.injector });
         return toRepoResource(resource);
     }
 

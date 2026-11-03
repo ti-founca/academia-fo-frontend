@@ -1,7 +1,7 @@
 import { ReactiveFormsModule } from "@angular/forms";
-import { PeriodoLectivoFacade } from "@features/evaluacion-docente/reportes/application/facade/periodo-lectivo.facade";
-import { PeriodoLectivoApiService } from "@features/evaluacion-docente/reportes/data/periodo-lectivo-api.service";
-import { PeriodoLectivoRepository } from "@features/evaluacion-docente/reportes/domain/repository/periodo-lectivo.repository";
+import { EstamentoFacade } from "@features/evaluacion-docente/reportes/application/facade/estamento.facade";
+import { EstamentoApiService } from "@features/evaluacion-docente/reportes/data/estamento-api.service";
+import { EstamentoRepository } from "@features/evaluacion-docente/reportes/domain/repository/estamento.repository";
 import { NzGridModule } from "ng-zorro-antd/grid";
 import { NzSelectModule } from "ng-zorro-antd/select";
 
@@ -10,7 +10,7 @@ export default {
         NzGridModule, NzSelectModule, ReactiveFormsModule
     ],
     providers: [
-        PeriodoLectivoFacade,
-        { provide: PeriodoLectivoRepository, useClass: PeriodoLectivoApiService },
+        EstamentoFacade,
+        { provide: EstamentoRepository, useClass: EstamentoApiService },
     ]
 }
